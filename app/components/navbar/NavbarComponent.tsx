@@ -4,7 +4,7 @@ export default function NavbarComponent() {
   return (
     <div className="navbar bg-base-300">
       <div className="navbar-start">
-        <Link href="/">{process.env.APP_TITLE}</Link>
+        <Link href="/">{process.env.NEXT_PUBLIC_APP_TITLE}</Link>
       </div>
       <div className="navbar-center">
         <button>Apps</button>

@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: process.env.APP_TITLE,
-  description: process.env.APP_DESCRIPTION,
+  title: process.env.NEXT_PUBLIC_APP_TITLE,
+  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
