@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface ShortenResult {
   short_code: string;
@@ -9,33 +9,83 @@ interface ShortenResult {
 }
 
 export default function UrlShtnr() {
-  const [url, setUrl] = useState('');
-  const [customCode, setCustomCode] = useState('');
+  const [url, setUrl] = useState("");
+  const [customCode, setCustomCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ShortenResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  function validateAndFormatUrl(rawUrl: string): {
+    valid: boolean;
+    formattedUrl?: string;
+    error?: string;
+  } {
+    let input = rawUrl.trim();
+    if (!input) {
+      return { valid: false, error: "Veuillez entrer une URL." };
+    }
+
+    // 1. Corrige les fautes de frappe courantes de protocole (ex: "https//", "http//")
+    input = input.replace(/^(https?)\/{1,2}/i, "$1://");
+
+    // 2. Ajoute https:// par défaut si aucun protocole n'est présent
+    if (!/^https?:\/\//i.test(input)) {
+      input = `https://${input}`;
+    }
+
+    // 3. Validation structurelle avec le constructeur natif URL
+    try {
+      const parsed = new URL(input);
+
+      // On accepte uniquement http et https
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        return { valid: false, error: "Le protocole doit être HTTP ou HTTPS." };
+      }
+
+      // Vérifie que l'hôte n'est pas vide et contient bien une extension (ex: domain.com)
+      // On autorise "localhost" pour vos tests en local
+      const isLocalhost = parsed.hostname === "localhost";
+      const hasValidDomain =
+        parsed.hostname.includes(".") &&
+        parsed.hostname.split(".").pop()!.length >= 2;
+
+      if (!isLocalhost && !hasValidDomain) {
+        return {
+          valid: false,
+          error: "Le nom de domaine est invalide (ex: exemple.com).",
+        };
+      }
+
+      return { valid: true, formattedUrl: parsed.href };
+    } catch {
+      return { valid: false, error: "Format d'URL invalide." };
+    }
+  }
+
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setError(null);
     setResult(null);
 
-    // Basic client validation
-    let formattedUrl = url.trim();
-    if (!formattedUrl) return;
+    const {
+      valid,
+      formattedUrl,
+      error: validationError,
+    } = validateAndFormatUrl(url);
 
-    if (!/^https?:\/\//i.test(formattedUrl)) {
-      formattedUrl = `https://${formattedUrl}`;
+    if (!valid || !formattedUrl) {
+      setError(validationError || "URL invalide.");
+      return;
     }
 
     setLoading(true);
 
     try {
-      const apiUrl = process.env.API_URL || 'http://localhost:8000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const response = await fetch(`${apiUrl}/url-shtnr/shorten`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url: formattedUrl,
           custom_code: customCode.trim() || undefined,
@@ -45,17 +95,22 @@ export default function UrlShtnr() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || 'Erreur lors de la réduction du lien.');
+        throw new Error(data.detail || "Erreur lors de la réduction du lien.");
       }
 
-      setResult(data);
-      setUrl('');
-      setCustomCode('');
+      setResult({
+        short_code: data.short_code,
+        short_url: `${window.location.origin}/u/${data.short_code}`,
+        original_url: data.original_url,
+      });
+
+      setUrl("");
+      setCustomCode("");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Une erreur inattendue est survenue.');
+        setError("Une erreur inattendue est survenue.");
       }
     } finally {
       setLoading(false);
@@ -78,7 +133,8 @@ export default function UrlShtnr() {
             URL Shortener
           </h1>
           <p className="text-base-content/70 text-sm">
-            Raccourcissez vos URLs avec <span className="font-semibold text-primary">0w.lat</span>
+            Raccourcissez vos URLs avec{" "}
+            <span className="font-semibold text-primary">0w.lat</span>
           </p>
         </div>
 
@@ -104,7 +160,7 @@ export default function UrlShtnr() {
                   Génération...
                 </>
               ) : (
-                'Générer'
+                "Générer"
               )}
             </button>
           </div>
@@ -153,7 +209,7 @@ export default function UrlShtnr() {
               <button
                 type="button"
                 onClick={copyToClipboard}
-                className={`btn btn-sm ${copied ? 'btn-success' : 'btn-outline'}`}
+                className={`btn btn-sm ${copied ? "btn-success" : "btn-outline"}`}
               >
                 {copied ? (
                   <>

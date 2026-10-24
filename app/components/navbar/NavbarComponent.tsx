@@ -10,7 +10,7 @@ export default function NavbarComponent() {
         <button>Apps</button>
       </div>
       <div className="navbar-end">
-        <button className="btn btn-primary">
+        <button className="btn btn-sm btn-primary">
           Connexion
         </button>
       </div>

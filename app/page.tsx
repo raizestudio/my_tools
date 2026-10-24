@@ -1,13 +1,6 @@
-// Components
-import AppCardComponent from "@/app/components/AppCardComponent";
-
-interface AppItem {
-  id: string;
-  name: string;
-  href: string;
-  icon: string;
-  description: string;
-}
+// app/page.tsx
+import DashboardGrid from "@/app/components/DashboardGridComponent";
+import { AppItem } from "@/app/components/AppCardComponent";
 
 const availableApps: AppItem[] = [
   {
@@ -17,15 +10,12 @@ const availableApps: AppItem[] = [
     icon: "icon-[lucide--link-2]",
     description: "Raccourcisseur de liens rapide avec 0w.lat",
   },
-  // Future tools can be added here easily
 ];
 
 export default function Home() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-8">
-      {availableApps.map((app) => (
-        <AppCardComponent key={app.id} app={app} />
-      ))}
+    <div className="max-w-7xl w-full mx-auto p-6 md:p-8">
+      <DashboardGrid apps={availableApps} />
     </div>
   );
 }
