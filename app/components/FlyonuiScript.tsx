@@ -2,11 +2,12 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
-export default function FlyonuiScript() {
+function FlyonuiInit() {
   const path = usePathname();
 
+  // Load FlyonUI once on initial mount
   useEffect(() => {
     const initFlyonUI = async () => {
       await import('flyonui/flyonui');
@@ -15,6 +16,7 @@ export default function FlyonuiScript() {
     initFlyonUI();
   }, []);
 
+  // Re-run autoInit whenever the client route changes
   useEffect(() => {
     const timer = setTimeout(() => {
       if (
@@ -29,4 +31,12 @@ export default function FlyonuiScript() {
   }, [path]);
 
   return null;
+}
+
+export default function FlyonuiScript() {
+  return (
+    <Suspense fallback={null}>
+      <FlyonuiInit />
+    </Suspense>
+  );
 }
