@@ -10,6 +10,13 @@ const availableApps: AppItem[] = [
     icon: "icon-[lucide--link-2]",
     description: "Raccourcisseur de liens rapide avec 0w.lat",
   },
+  {
+    id: "passwd-generator",
+    name: "Password Generator",
+    href: "/passwd-generator",
+    icon: "icon-[lucide--link-2]",
+    description: "Générateur de mots de passe",
+  },
 ];
 
 export default function Home() {

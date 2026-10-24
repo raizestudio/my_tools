@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 // Components
-import FlyonuiScript from '@/app/components/FlyonuiScript';
+import FlyonuiScript from "@/app/components/FlyonuiScript";
 import NavbarComponent from "@/app/components/navbar/NavbarComponent";
 import FooterComponent from "@/app/components/footer/FooterComponent";
 
@@ -27,12 +27,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                    (function() {
+                      try {
+                        var saved = localStorage.getItem('theme');
+                        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                        document.documentElement.setAttribute('data-theme', theme);
+                      } catch (e) {}
+                    })();
+                  `,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <NavbarComponent />
-        <div className="flex flex-col grow">
-          {children}
-        </div>
+        <div className="flex flex-col grow">{children}</div>
         <FooterComponent />
         <FlyonuiScript />
       </body>
