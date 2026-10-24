@@ -6,7 +6,11 @@ interface PageProps {
   params: Promise<{ short_code: string }>;
 }
 
-async function RedirectHandler({ params }: { params: Promise<{ short_code: string }> }) {
+async function RedirectHandler({
+  params,
+}: {
+  params: Promise<{ short_code: string }>;
+}): Promise<React.ReactNode> {
   const { short_code } = await params;
   const apiUrl = process.env.API_URL || 'http://localhost:8000';
 
@@ -30,6 +34,7 @@ async function RedirectHandler({ params }: { params: Promise<{ short_code: strin
   }
 
   notFound();
+  return null;
 }
 
 function RedirectFallback() {
