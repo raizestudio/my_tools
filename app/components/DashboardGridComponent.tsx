@@ -13,7 +13,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
 
   useEffect(() => {
     const checkHealth = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const apiUrl = process.env.API_URL || 'http://localhost:8000';
       try {
         const res = await fetch(`${apiUrl}/health`, {
           signal: AbortSignal.timeout(2500),
