@@ -34,6 +34,14 @@ const availableApps: AppItem[] = [
     icon: 'icon-[lucide--qr-code]',
     description: 'Générez des QR codes pour liens et créez une fiche de connexion Wi-Fi.',
     networkRequired: false,
+  },
+  {
+    id: 'secret-share',
+    name: 'Secret Sharing',
+    href: '/secret-share',
+    icon: 'icon-[lucide--shield-alert]',
+    description: 'Partagez des identifiants chiffrés de bout en bout avec autodestruction.',
+    networkRequired: true,
   }
 ];
 
