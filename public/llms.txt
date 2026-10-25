@@ -1,0 +1,9 @@
+# 0w.lat
+> Fast, client-side, privacy-first web utilities.
+
+## Tools
+- [JSON Converter](https://0w.lat/tools/json-converter): In-browser JSON to TypeScript interfaces & Pydantic models.
+- [URL Shortener](https://0w.lat/tools/url-shortener): Fast URL shortening with custom vanity slugs.
+- [QR & Wi-Fi Card](https://0w.lat/tools/qr-code): Client-side QR generation and printable Wi-Fi sign-in sheets.
+- [Secret Sharing](https://0w.lat/tools/secret-share): End-to-end AES-GCM encrypted self-destructing pastes.
+- [Webhook Catcher](https://0w.lat/tools/webhook-catcher): Inspect incoming HTTP webhooks in real-time via WebSockets.

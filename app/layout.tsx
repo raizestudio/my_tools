@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -7,6 +7,9 @@ import "./globals.css";
 import FlyonuiScript from "@/app/components/FlyonuiScript";
 import NavbarComponent from "@/app/components/navbar/NavbarComponent";
 import FooterComponent from "@/app/components/footer/FooterComponent";
+
+// Context
+import { I18nProvider } from "@/app/context/I18nContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,9 +21,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://0w.lat";
+
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_APP_TITLE,
-  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "0w | Privacy-First Web Toolbox",
+    template: "%s | 0w",
+  },
+  description:
+    "Fast, secure, and client-side focused developer and privacy utilities.",
+  openGraph: {
+    siteName: "0w Toolbox",
+    type: "website",
+    locale: "en_US",
+    alternateLocale: ["fr_FR"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -46,9 +66,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <NavbarComponent />
-        <div className="flex flex-col grow">{children}</div>
-        <FooterComponent />
+        <I18nProvider>
+          <NavbarComponent />
+          <div className="flex flex-col grow">{children}</div>
+          <FooterComponent />
+        </I18nProvider>
         <FlyonuiScript />
         <Analytics />
       </body>
