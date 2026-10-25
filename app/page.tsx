@@ -42,6 +42,14 @@ const availableApps: AppItem[] = [
     icon: 'icon-[lucide--shield-alert]',
     description: 'Partagez des identifiants chiffrés de bout en bout avec autodestruction.',
     networkRequired: true,
+  },
+  {
+    id: 'webhook-catcher',
+    name: 'Webhook Catcher',
+    href: '/webhook-catcher',
+    icon: 'icon-[lucide--radio]',
+    description: 'Testez et inspectez des requêtes HTTP et webhooks en direct via WebSockets.',
+    networkRequired: true,
   }
 ];
 
