@@ -27,6 +27,14 @@ const availableApps: AppItem[] = [
     icon: 'icon-[lucide--code-xml]',
     networkRequired: false
   },
+  {
+    id: 'qr-code',
+    name: 'QR Code & Wi-Fi Card',
+    href: '/qr-code',
+    icon: 'icon-[lucide--qr-code]',
+    description: 'Générez des QR codes pour liens et créez une fiche de connexion Wi-Fi.',
+    networkRequired: false,
+  }
 ];
 
 export default function Home() {

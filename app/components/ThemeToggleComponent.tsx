@@ -29,7 +29,7 @@ export default function ThemeToggle() {
   }
 
   return (
-    <label className="swap swap-rotate cursor-pointer text-primary-content">
+    <label className="swap swap-rotate cursor-pointer text-base-content">
       <input
         type="checkbox"
         onChange={handleToggle}

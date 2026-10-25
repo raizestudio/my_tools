@@ -4,9 +4,9 @@ import ThemeToggleComponent from "@/app/components/ThemeToggleComponent";
 
 export default function NavbarComponent() {
   return (
-    <div className="navbar bg-base-300">
+    <div className="navbar bg-base-200">
       <div className="navbar-start">
-        <Link href="/" className="text-xl font-black text-primary-content">
+        <Link href="/" className="text-xl font-black text-base-content">
           {process.env.NEXT_PUBLIC_APP_TITLE}
         </Link>
       </div>
