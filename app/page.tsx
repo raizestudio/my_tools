@@ -9,13 +9,23 @@ const availableApps: AppItem[] = [
     href: "/url-shtnr",
     icon: "icon-[lucide--link-2]",
     description: "Raccourcisseur de liens rapide avec 0w.lat",
+    networkRequired: true,
   },
   {
     id: "passwd-generator",
     name: "Password Generator",
     href: "/passwd-generator",
-    icon: "icon-[lucide--link-2]",
+    icon: "icon-[lucide--lock]",
     description: "Générateur de mots de passe",
+    networkRequired: false
+  },
+  {
+    id: 'json-converter',
+    name: 'JSON Converter',
+    description: 'Formatez et convertissez du JSON vers TypeScript ou Pydantic v2.',
+    href: '/json-converter',
+    icon: 'icon-[lucide--code-xml]',
+    networkRequired: false
   },
 ];
 

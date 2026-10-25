@@ -1,5 +1,11 @@
 // app/passwd-generator/page.tsx
+import type { Metadata } from 'next';
 import PasswordGeneratorComponent from "@/app/components/PasswordGeneratorComponent";
+
+export const metadata: Metadata = {
+  title: `Génerateur de mots de passe - ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+  description: 'Générez des mots de passe forts',
+};
 
 export default function Home() {
   return (

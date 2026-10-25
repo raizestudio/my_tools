@@ -11,13 +11,13 @@ export default function NavbarComponent() {
         </Link>
       </div>
       <div className="navbar-center">
-        <button className="btn btn-ghost btn-sm">Apps</button>
+        {/*<button className="btn btn-sm">Apps</button>*/}
       </div>
-      <div className="navbar-end gap-2">
-        <ThemeToggleComponent />
-        <button className="btn btn-sm btn-primary">
+      <div className="navbar-end gap-4">
+        <button className="btn btn-sm btn-primary" disabled>
           Connexion
         </button>
+        <ThemeToggleComponent />
       </div>
     </div>
   );

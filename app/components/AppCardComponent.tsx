@@ -7,6 +7,7 @@ export interface AppItem {
   href: string;
   icon: string;
   description: string;
+  networkRequired: boolean;
 }
 
 interface AppCardProps {
@@ -17,16 +18,17 @@ interface AppCardProps {
 export default function AppCardComponent({ app, disabled = false }: AppCardProps) {
   const cardContent = (
     <div
-      className={`card card-border bg-base-100 p-5 flex flex-col gap-3 transition-all duration-200 ${
-        disabled
+      className={`card card-border bg-base-100 p-5 flex flex-col justify-between h-full transition-all duration-200 ${
+        disabled && app.networkRequired
           ? "opacity-50 grayscale cursor-not-allowed select-none bg-base-200/40"
           : "hover:bg-base-200/60 cursor-pointer group"
       }`}
     >
-      <div className="flex items-center justify-between">
+      {/* Icône + Badge */}
+      <div className="flex items-center justify-between mb-4">
         <div
           className={`size-10 rounded-lg flex items-center justify-center transition-transform ${
-            disabled
+            disabled && app.networkRequired
               ? "bg-base-content/10 text-base-content/40"
               : "bg-primary/10 text-primary group-hover:scale-105"
           }`}
@@ -34,34 +36,41 @@ export default function AppCardComponent({ app, disabled = false }: AppCardProps
           <span className={`${app.icon} size-5`}></span>
         </div>
 
-        {disabled && (
+        {disabled && app.networkRequired && (
           <span className="badge badge-sm badge-soft badge-warning text-[10px]">
             Hors ligne
           </span>
         )}
       </div>
 
-      <div>
+      {/* Titre + Description */}
+      <div className="flex flex-col grow">
         <h2
           className={`text-base font-semibold transition-colors ${
-            disabled
+            disabled && app.networkRequired
               ? "text-base-content/60"
               : "text-base-content group-hover:text-primary"
           }`}
         >
           {app.name}
         </h2>
-        <p className="text-xs text-base-content/60 mt-1">
+        {/* line-clamp-2 assure que le texte ne dépasse pas 2 lignes */}
+        <p className="text-xs text-base-content/60 mt-1 line-clamp-2">
           {app.description}
         </p>
       </div>
     </div>
   );
 
-  // If disabled, render plain element without navigation
-  if (disabled) {
-    return cardContent;
+  // Si désactivé, on rend le bloc tel quel avec h-full
+  if (disabled && app.networkRequired) {
+    return <div className="h-full">{cardContent}</div>;
   }
 
-  return <Link href={app.href}>{cardContent}</Link>;
+  // Si actif, le Link prend toute la hauteur de la case de la grille
+  return (
+    <Link href={app.href} className="h-full block">
+      {cardContent}
+    </Link>
+  );
 }

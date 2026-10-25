@@ -35,8 +35,8 @@ export default function ThemeToggle() {
         onChange={handleToggle}
         checked={theme === 'dark'}
       />
-      <span className="swap-on icon-[ri--moon-fill] size-7"></span>
-      <span className="swap-off icon-[ri--sun-fill] size-7"></span>
+      <span className="swap-on icon-[ri--moon-fill] size-6"></span>
+      <span className="swap-off icon-[ri--sun-fill] size-6"></span>
     </label>
   );
 }
