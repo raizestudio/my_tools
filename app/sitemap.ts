@@ -12,6 +12,10 @@ const toolSlugs = [
   "secret-share",
   "webhook-catcher",
   "jwt-inspector",
+  "passwd-generator",
+  "exif-cleaner",
+  "har-sanitize",
+  "cron-builder",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
