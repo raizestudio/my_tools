@@ -38,6 +38,22 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
     i18nKey: "exifCleaner",
     networkRequired: false,
   },
+  {
+    id: "har-sanitize",
+    i18nKey: "harSanitizer",
+    href: "/har-sanitize",
+    icon: "icon-[lucide--shield-check]",
+    category: "security",
+    networkRequired: false,
+  },
+  {
+    id: "cert-inspector",
+    i18nKey: "certInspector",
+    href: "/cert-inspector",
+    icon: "icon-[lucide--shield-alert]",
+    category: "security",
+    networkRequired: false,
+  },
 
   // --- Developer Utilities ---
   {
@@ -61,14 +77,6 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
     i18nKey: "jwtInspector",
     href: "/jwt-inspector",
     icon: "icon-[lucide--key-round]",
-    category: "developer",
-    networkRequired: false,
-  },
-  {
-    id: "har-sanitize",
-    i18nKey: "harSanitizer",
-    href: "/har-sanitize",
-    icon: "icon-[lucide--shield-check]",
     category: "developer",
     networkRequired: false,
   },
