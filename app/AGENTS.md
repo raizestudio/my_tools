@@ -21,7 +21,7 @@ Boîte à outils web personnelle orientée vie privée, performance et exécutio
 ```text
 ├── app/                          # Next.js App Router
 │   ├── components/               # Composants interactifs ('use client')
-│   ├── context/                  # I18nContext, ThemeContext
+│   ├── context/                  # Vide
 │   ├── lib/                      # Utilitaires (crypto.ts, i18n/dictionaries.ts)
 │   ├── s/[id]/page.tsx           # Consultation de secret (Zero-Knowledge)
 │   ├── tools/[slug]/page.tsx     # Pages Server Component (export const metadata)

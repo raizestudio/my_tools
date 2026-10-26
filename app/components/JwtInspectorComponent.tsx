@@ -1,9 +1,9 @@
-// app/components/JwtInspectorComponent.tsx
+// app/components/jwt/JwtInspectorComponent.tsx
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import Link from 'next/link';
-import { useI18n } from '@/app/context/I18nContext';
+import { useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 function decodeBase64Url(str: string): string {
   try {
@@ -67,7 +67,9 @@ const SAMPLE_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIERldmVsb3BlciIsImFkbWluIjp0cnVlLCJpYXQiOjE3MzAwMDAwMDAsImV4cCI6MTk5OTk5OTk5OX0.5G_B1pfnGgqV3549Hn_YhM9JvhX_6sZ8rU-O4U0k5gY';
 
 export default function JwtInspectorComponent() {
-  const { locale } = useI18n();
+  const locale = useLocale();
+  const isFr = locale === 'fr';
+
   const [tokenInput, setTokenInput] = useState(SAMPLE_JWT);
   const [secretKey, setSecretKey] = useState('');
   const [isCopied, setIsCopied] = useState<string | null>(null);
@@ -87,7 +89,7 @@ export default function JwtInspectorComponent() {
     if (nowSec === null) {
       return d.toISOString();
     }
-    return d.toLocaleString(locale === 'fr' ? 'fr-FR' : 'en-US');
+    return d.toLocaleString(isFr ? 'fr-FR' : 'en-US');
   };
 
   const cleanToken = tokenInput.trim().replace(/^Bearer\s+/i, '');
@@ -105,17 +107,17 @@ export default function JwtInspectorComponent() {
     try {
       parsedHeader = JSON.parse(decodeBase64Url(headerB64));
     } catch {
-      error = locale === 'fr' ? 'En-tête JWT invalide' : 'Invalid JWT Header';
+      error = isFr ? 'En-tête JWT invalide' : 'Invalid JWT Header';
     }
 
     try {
       parsedPayload = JSON.parse(decodeBase64Url(payloadB64));
     } catch {
-      error = locale === 'fr' ? 'Charge utile (payload) invalide' : 'Invalid JWT Payload';
+      error = isFr ? 'Charge utile (payload) invalide' : 'Invalid JWT Payload';
     }
 
     return { parsedHeader, parsedPayload, error };
-  }, [headerB64, payloadB64, isThreeParts, locale]);
+  }, [headerB64, payloadB64, isThreeParts, isFr]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -159,17 +161,17 @@ export default function JwtInspectorComponent() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Link href="/" className="text-xs text-base-content/60 hover:text-primary transition-colors">
-              {locale === 'fr' ? 'Outils' : 'Tools'}
+              {isFr ? 'Outils' : 'Tools'}
             </Link>
             <span className="text-xs text-base-content/30">/</span>
             <span className="text-xs text-primary font-medium">JWT Inspector</span>
           </div>
           <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
             <span className="icon-[lucide--key-round] size-6 text-primary"></span>
-            {locale === 'fr' ? 'Inspecteur & Décodeur JWT' : 'JWT Inspector & Debugger'}
+            {isFr ? 'Inspecteur & Décodeur JWT' : 'JWT Inspector & Debugger'}
           </h1>
           <p className="text-xs text-base-content/60 mt-1">
-            {locale === 'fr'
+            {isFr
               ? 'Décodage et inspection 100 % hors ligne. Aucun jeton n’est transmis au réseau.'
               : 'Zero-knowledge inspection. Tokens are decoded client-side and never leave your browser.'}
           </p>
@@ -181,7 +183,7 @@ export default function JwtInspectorComponent() {
             onClick={() => setTokenInput(SAMPLE_JWT)}
             className="btn btn-xs btn-outline"
           >
-            {locale === 'fr' ? 'Charger un exemple' : 'Load sample'}
+            {isFr ? 'Charger un exemple' : 'Load sample'}
           </button>
           <button
             type="button"
@@ -191,7 +193,7 @@ export default function JwtInspectorComponent() {
             }}
             className="btn btn-xs btn-ghost text-base-content/60"
           >
-            {locale === 'fr' ? 'Effacer' : 'Clear'}
+            {isFr ? 'Effacer' : 'Clear'}
           </button>
         </div>
       </div>
@@ -203,7 +205,7 @@ export default function JwtInspectorComponent() {
           <div className="card card-border bg-base-100 p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-semibold uppercase tracking-wider text-base-content/70">
-                {locale === 'fr' ? 'Jeton encodé (Raw JWT)' : 'Encoded Token (Raw JWT)'}
+                {isFr ? 'Jeton encodé (Raw JWT)' : 'Encoded Token (Raw JWT)'}
               </label>
               <span className="badge badge-xs badge-soft badge-success">Local only</span>
             </div>
@@ -219,7 +221,7 @@ export default function JwtInspectorComponent() {
             {isThreeParts && (
               <div className="flex flex-col gap-1.5 pt-2 border-t border-base-content/10">
                 <span className="text-[11px] font-medium text-base-content/60">
-                  {locale === 'fr' ? 'Structure identifiée :' : 'Identified segments:'}
+                  {isFr ? 'Structure identifiée :' : 'Identified segments:'}
                 </span>
                 <div className="p-3 bg-base-200/50 rounded-md font-mono text-xs break-all leading-relaxed">
                   <span className="text-error font-medium">{headerB64}</span>
@@ -235,26 +237,26 @@ export default function JwtInspectorComponent() {
           <div className="card card-border bg-base-100 p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-semibold uppercase tracking-wider text-base-content/70">
-                {locale === 'fr' ? 'Vérifier la signature' : 'Verify Signature'}
+                {isFr ? 'Vérifier la signature' : 'Verify Signature'}
               </label>
               {signatureStatus === true && (
                 <span className="badge badge-sm badge-success text-xs">
-                  {locale === 'fr' ? 'Signature valide' : 'Signature verified'}
+                  {isFr ? 'Signature valide' : 'Signature verified'}
                 </span>
               )}
               {signatureStatus === false && (
                 <span className="badge badge-sm badge-error text-xs">
-                  {locale === 'fr' ? 'Signature invalide' : 'Invalid signature'}
+                  {isFr ? 'Signature invalide' : 'Invalid signature'}
                 </span>
               )}
             </div>
 
             <p className="text-[11px] text-base-content/60">
               {decodedData?.parsedHeader?.alg && String(decodedData.parsedHeader.alg).startsWith('HS')
-                ? locale === 'fr'
+                ? isFr
                   ? `Algorithme détecté : ${decodedData.parsedHeader.alg}. Saisissez votre clé secrète partagée.`
                   : `Detected ${decodedData.parsedHeader.alg}. Enter the shared secret below.`
-                : locale === 'fr'
+                : isFr
                 ? 'La vérification locale instantanée prend en charge les signatures HMAC (HS256, HS384, HS512).'
                 : 'Instant client-side verification supports HMAC (HS256, HS384, HS512).'}
             </p>
@@ -276,7 +278,7 @@ export default function JwtInspectorComponent() {
             <div className="alert alert-soft alert-warning text-xs">
               <span className="icon-[lucide--alert-circle] size-4"></span>
               <span>
-                {locale === 'fr'
+                {isFr
                   ? 'Un JWT valide doit comporter 3 segments séparés par des points (Header.Payload.Signature).'
                   : 'A valid JWT must contain 3 segments separated by dots (Header.Payload.Signature).'}
               </span>
@@ -308,10 +310,10 @@ export default function JwtInspectorComponent() {
                 <div>
                   <span className="font-semibold mr-1">
                     {isExpired
-                      ? locale === 'fr'
+                      ? isFr
                         ? 'Jeton expiré :'
                         : 'Token expired:'
-                      : locale === 'fr'
+                      : isFr
                       ? 'Jeton actif :'
                       : 'Token active:'}
                   </span>
@@ -320,7 +322,7 @@ export default function JwtInspectorComponent() {
               </div>
               <span className="font-mono text-[11px] opacity-80">
                 {Math.abs(Math.round((exp - nowSec) / 60))}{' '}
-                {locale === 'fr' ? 'min restantes/passées' : 'mins delta'}
+                {isFr ? 'min restantes/passées' : 'mins delta'}
               </span>
             </div>
           )}
@@ -347,14 +349,22 @@ export default function JwtInspectorComponent() {
                 }
                 className="btn btn-xs btn-ghost text-base-content/60"
               >
-                {isCopied === 'header' ? 'Copié !' : 'Copier JSON'}
+                {isCopied === 'header'
+                  ? isFr
+                    ? 'Copié !'
+                    : 'Copied!'
+                  : isFr
+                  ? 'Copier JSON'
+                  : 'Copy JSON'}
               </button>
             </div>
 
             <pre className="p-3 bg-base-200/50 rounded-md font-mono text-xs overflow-x-auto text-base-content/90">
               {decodedData?.parsedHeader
                 ? JSON.stringify(decodedData.parsedHeader, null, 2)
-                : '// En attente d’un en-tête valide...'}
+                : isFr
+                ? '// En attente d’un en-tête valide...'
+                : '// Waiting for valid header...'}
             </pre>
           </div>
 
@@ -367,7 +377,7 @@ export default function JwtInspectorComponent() {
                   Payload
                 </span>
                 <span className="text-[11px] text-base-content/50">
-                  ({locale === 'fr' ? 'Données & Droits' : 'Claims'})
+                  ({isFr ? 'Données & Droits' : 'Claims'})
                 </span>
               </div>
               <button
@@ -380,14 +390,22 @@ export default function JwtInspectorComponent() {
                 }
                 className="btn btn-xs btn-ghost text-base-content/60"
               >
-                {isCopied === 'payload' ? 'Copié !' : 'Copier JSON'}
+                {isCopied === 'payload'
+                  ? isFr
+                    ? 'Copié !'
+                    : 'Copied!'
+                  : isFr
+                  ? 'Copier JSON'
+                  : 'Copy JSON'}
               </button>
             </div>
 
             <pre className="p-3 bg-base-200/50 rounded-md font-mono text-xs overflow-x-auto text-base-content/90">
               {decodedData?.parsedPayload
                 ? JSON.stringify(decodedData.parsedPayload, null, 2)
-                : '// En attente d’un payload valide...'}
+                : isFr
+                ? '// En attente d’un payload valide...'
+                : '// Waiting for valid payload...'}
             </pre>
 
             {/* Claims RFC 7519 */}

@@ -1,5 +1,9 @@
 // app/lib/i18n/locales/en.ts
 export const en = {
+    meta: {
+        title: "0w | Privacy-First Web Toolbox",
+        desc: "Fast, secure, and client-side focused developer and privacy utilities with zero tracking.",
+    },
     common: {
         offlineTitle: "Backend server offline",
         offlineDesc: "API-dependent tools are temporarily unavailable.",
@@ -15,29 +19,31 @@ export const en = {
         buyMeACoffee: "Buy me a coffee",
     },
     privacyNotice: {
-      badge: 'Privacy-First Architecture',
-      title: 'Zero-Knowledge & Data Privacy',
-      subtitle: '0w is built with an uncompromising focus on privacy and client-side processing.',
-      points: [
-        {
-          icon: 'icon-[lucide--cpu]',
-          title: 'Client-Side Execution',
-          desc: 'JWT inspection, JSON conversions, and password generation happen entirely inside your browser sandbox.',
-        },
-        {
-          icon: 'icon-[lucide--flame]',
-          title: 'Ephemeral Storage',
-          desc: 'Encrypted secrets and temporary webhooks are stored using strict time-to-live policies and auto-purged on schedule.',
-        },
-        {
-          icon: 'icon-[lucide--shield-off]',
-          title: 'Zero Tracking',
-          desc: 'No advertising networks, no third-party profiling cookies, and no telemetry selling.',
-        },
-      ],
-      supportTitle: 'Independent & Open Source',
-      supportDesc: '0w is completely ad-free and community-driven. If these tools help your workflow, consider starring the repo or buying a coffee to support infrastructure costs.',
-      button: 'I Understand & Continue',
+        badge: "Privacy-First Architecture",
+        title: "Zero-Knowledge & Data Privacy",
+        subtitle:
+            "0w is built with an uncompromising focus on privacy and client-side processing.",
+        points: [
+            {
+                icon: "icon-[lucide--cpu]",
+                title: "Client-Side Execution",
+                desc: "JWT inspection, JSON conversions, and password generation happen entirely inside your browser sandbox.",
+            },
+            {
+                icon: "icon-[lucide--flame]",
+                title: "Ephemeral Storage",
+                desc: "Encrypted secrets and temporary webhooks are stored using strict time-to-live policies and auto-purged on schedule.",
+            },
+            {
+                icon: "icon-[lucide--shield-off]",
+                title: "Zero Tracking",
+                desc: "No advertising networks, no third-party profiling cookies, and no telemetry selling.",
+            },
+        ],
+        supportTitle: "Independent & Open Source",
+        supportDesc:
+            "0w is completely ad-free and community-driven. If these tools help your workflow, consider starring the repo or buying a coffee to support infrastructure costs.",
+        button: "I Understand & Continue",
     },
     categories: {
         security: {

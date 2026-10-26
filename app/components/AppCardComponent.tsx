@@ -1,9 +1,9 @@
 // app/components/AppCardComponent.tsx
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { ToolItem } from "@/app/lib/tools";
-import { useI18n } from "@/app/context/I18nContext";
 
 interface AppCardProps {
   app: ToolItem;
@@ -11,8 +11,16 @@ interface AppCardProps {
 }
 
 export default function AppCardComponent({ app, disabled = false }: AppCardProps) {
-  const { t } = useI18n();
-  const toolDetails = t.tools[app.i18nKey];
+  const tCommon = useTranslations("common");
+  const tTools = useTranslations("tools");
+
+  const title = tTools.has(`${app.i18nKey}.title` as any)
+    ? tTools(`${app.i18nKey}.title` as any)
+    : app.id;
+
+  const desc = tTools.has(`${app.i18nKey}.desc` as any)
+    ? tTools(`${app.i18nKey}.desc` as any)
+    : "";
 
   const cardContent = (
     <div
@@ -35,7 +43,7 @@ export default function AppCardComponent({ app, disabled = false }: AppCardProps
 
         {disabled && app.networkRequired && (
           <span className="badge badge-sm badge-soft badge-warning text-[10px]">
-            {t.common.offlineTitle}
+            {tCommon("offlineTitle")}
           </span>
         )}
       </div>
@@ -48,10 +56,10 @@ export default function AppCardComponent({ app, disabled = false }: AppCardProps
               : "text-base-content group-hover:text-primary"
           }`}
         >
-          {toolDetails?.title ?? app.id}
+          {title}
         </h2>
         <p className="text-xs text-base-content/60 mt-1 line-clamp-2">
-          {toolDetails?.desc ?? ""}
+          {desc}
         </p>
       </div>
     </div>

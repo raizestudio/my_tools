@@ -2,10 +2,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useI18n } from '@/app/context/I18nContext';
+import { useTranslations } from 'next-intl';
+
+interface PrivacyPoint {
+  icon: string;
+  title: string;
+  desc: string;
+}
 
 export default function PrivacyModalComponent() {
-  const { t } = useI18n();
+  const tPrivacy = useTranslations('privacyNotice');
+  const tCommon = useTranslations('common');
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -22,6 +29,9 @@ export default function PrivacyModalComponent() {
 
   if (!isOpen) return null;
 
+  // Récupère le tableau d'objets déclaré dans le dictionnaire
+  const points = (tPrivacy.raw('points') ?? []) as PrivacyPoint[];
+
   return (
     <div
       role="dialog"
@@ -33,35 +43,36 @@ export default function PrivacyModalComponent() {
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="badge badge-sm badge-soft badge-primary">
-              {t.privacyNotice.badge}
+              {tPrivacy('badge')}
             </span>
           </div>
           <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
             <span className="icon-[lucide--shield-check] size-5 text-primary"></span>
-            {t.privacyNotice.title}
+            {tPrivacy('title')}
           </h2>
           <p className="text-xs text-base-content/70 leading-relaxed">
-            {t.privacyNotice.subtitle}
+            {tPrivacy('subtitle')}
           </p>
         </div>
 
         {/* Feature List */}
         <div className="flex flex-col gap-3 bg-base-200/40 p-4 rounded-xl border border-base-content/5">
-          {t.privacyNotice.points.map((point, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <div className="size-7 rounded-lg bg-base-100 border border-base-content/10 flex items-center justify-center shrink-0 mt-0.5 text-primary">
-                <span className={`${point.icon} size-3.5`}></span>
+          {Array.isArray(points) &&
+            points.map((point, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="size-7 rounded-lg bg-base-100 border border-base-content/10 flex items-center justify-center shrink-0 mt-0.5 text-primary">
+                  <span className={`${point.icon} size-3.5`}></span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-semibold text-base-content">
+                    {point.title}
+                  </span>
+                  <span className="text-[11px] text-base-content/65 leading-normal">
+                    {point.desc}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-semibold text-base-content">
-                  {point.title}
-                </span>
-                <span className="text-[11px] text-base-content/65 leading-normal">
-                  {point.desc}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
 
         {/* Open Source & Support Section */}
@@ -69,11 +80,11 @@ export default function PrivacyModalComponent() {
           <div className="flex items-center gap-2">
             <span className="icon-[lucide--heart-handshake] size-4 text-primary"></span>
             <span className="text-xs font-semibold text-base-content">
-              {t.privacyNotice.supportTitle}
+              {tPrivacy('supportTitle')}
             </span>
           </div>
           <p className="text-[11px] text-base-content/70 leading-relaxed">
-            {t.privacyNotice.supportDesc}
+            {tPrivacy('supportDesc')}
           </p>
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <a
@@ -83,7 +94,7 @@ export default function PrivacyModalComponent() {
               className="btn btn-xs btn-outline gap-1.5"
             >
               <span className="icon-[lucide--github] size-3.5"></span>
-              <span>{t.common.contribute}</span>
+              <span>{tCommon('contribute')}</span>
             </a>
             <a
               href="https://buymeacoffee.com/joelpinho1h"
@@ -92,7 +103,7 @@ export default function PrivacyModalComponent() {
               className="btn btn-xs btn-outline gap-1.5"
             >
               <span className="icon-[lucide--coffee] size-3.5 text-warning"></span>
-              <span>{t.common.buyMeACoffee}</span>
+              <span>{tCommon('buyMeACoffee')}</span>
             </a>
           </div>
         </div>
@@ -104,7 +115,7 @@ export default function PrivacyModalComponent() {
             onClick={handleDismiss}
             className="btn btn-primary btn-sm w-full font-medium"
           >
-            {t.privacyNotice.button}
+            {tPrivacy('button')}
           </button>
         </div>
       </div>

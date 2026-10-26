@@ -2,9 +2,9 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { ToolItem, ToolCategory } from "@/app/lib/tools";
 import AppCardComponent from "@/app/components/AppCardComponent";
-import { useI18n } from "@/app/context/I18nContext";
 
 interface DashboardGridProps {
   apps: ToolItem[];
@@ -17,7 +17,10 @@ const CATEGORY_META: { id: ToolCategory; icon: string }[] = [
 ];
 
 export default function DashboardGrid({ apps }: DashboardGridProps) {
-  const { t } = useI18n();
+  const tCommon = useTranslations("common");
+  const tCategories = useTranslations("categories");
+  const tTools = useTranslations("tools");
+
   const [isLive, setIsLive] = useState<boolean | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +43,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
 
   const isOffline = isLive === false;
 
-  // Filtrage combiné catégorie + recherche multilingue via les clés i18n
+  // Filtrage combiné catégorie + recherche multilingue via les messages next-intl
   const filteredApps = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
@@ -50,13 +53,16 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
       if (!matchesCategory) return false;
       if (!q) return true;
 
-      const details = t.tools[app.i18nKey];
-      const titleMatch = details?.title?.toLowerCase().includes(q) ?? false;
-      const descMatch = details?.desc?.toLowerCase().includes(q) ?? false;
+      const title = tTools.has(`${app.i18nKey}.title` as any)
+        ? tTools(`${app.i18nKey}.title` as any).toLowerCase()
+        : app.id.toLowerCase();
+      const desc = tTools.has(`${app.i18nKey}.desc` as any)
+        ? tTools(`${app.i18nKey}.desc` as any).toLowerCase()
+        : "";
 
-      return titleMatch || descMatch;
+      return title.includes(q) || desc.includes(q);
     });
-  }, [apps, selectedCategory, searchQuery, t]);
+  }, [apps, selectedCategory, searchQuery, tTools]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -66,10 +72,10 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           <span className="icon-[lucide--alert-triangle] size-5 text-warning shrink-0 mt-0.5"></span>
           <div className="flex flex-col">
             <span className="font-semibold text-sm">
-              {t.common.offlineTitle}
+              {tCommon("offlineTitle")}
             </span>
             <span className="text-xs text-base-content/70">
-              {t.common.offlineDesc}
+              {tCommon("offlineDesc")}
             </span>
           </div>
         </div>
@@ -88,7 +94,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
                 : "btn-ghost text-primary-content/70 dark:text-base-content hover:text-primary-content"
             }`}
           >
-            {t.common.allCategories}
+            {tCommon("allCategories")}
             <span className="badge badge-xs badge-soft ml-1 text-base-content">
               {apps.length}
             </span>
@@ -97,6 +103,10 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           {CATEGORY_META.map((cat) => {
             const count = apps.filter((a) => a.category === cat.id).length;
             const isActive = selectedCategory === cat.id;
+            const title = tCategories.has(`${cat.id}.title` as any)
+              ? tCategories(`${cat.id}.title` as any)
+              : cat.id;
+
             return (
               <button
                 key={cat.id}
@@ -109,9 +119,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
                 }`}
               >
                 <span className={`${cat.icon} size-4`}></span>
-                <span>
-                  {t.categories[cat.id]?.title || cat.id}
-                </span>
+                <span>{title}</span>
                 <span className="badge badge-xs badge-soft ml-1 text-base-content">
                   {count}
                 </span>
@@ -127,7 +135,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.common.searchPlaceholder}
+            placeholder={tCommon("searchPlaceholder")}
             className="input input-sm w-full pl-9 pr-8 bg-base-200/50 focus:bg-base-100"
           />
           {searchQuery && (
@@ -147,7 +155,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         <div className="card card-border bg-base-100 p-12 text-center flex flex-col items-center justify-center gap-3">
           <span className="icon-[lucide--search-x] size-10 text-base-content/40"></span>
           <p className="text-sm text-base-content/70">
-            {t.common.noResults}
+            {tCommon("noResults")}
           </p>
           <button
             type="button"
@@ -157,7 +165,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             }}
             className="btn btn-xs btn-outline"
           >
-            {t.common.clearSearch}
+            {tCommon("clearSearch")}
           </button>
         </div>
       )}
@@ -169,6 +177,13 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             const categoryApps = apps.filter((app) => app.category === cat.id);
             if (categoryApps.length === 0) return null;
 
+            const catTitle = tCategories.has(`${cat.id}.title` as any)
+              ? tCategories(`${cat.id}.title` as any)
+              : cat.id;
+            const catDesc = tCategories.has(`${cat.id}.desc` as any)
+              ? tCategories(`${cat.id}.desc` as any)
+              : "";
+
             return (
               <section key={cat.id} className="flex flex-col gap-4">
                 <div className="flex items-center gap-2.5 border-b border-base-content/10 pb-2">
@@ -177,11 +192,13 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <h2 className="text-base font-semibold text-base-content">
-                      {t.categories[cat.id]?.title}
+                      {catTitle}
                     </h2>
-                    <span className="text-xs text-base-content/50 hidden sm:inline">
-                      — {t.categories[cat.id]?.desc}
-                    </span>
+                    {catDesc && (
+                      <span className="text-xs text-base-content/50 hidden sm:inline">
+                        — {catDesc}
+                      </span>
+                    )}
                   </div>
                 </div>
 
