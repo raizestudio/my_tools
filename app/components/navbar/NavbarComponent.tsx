@@ -1,6 +1,7 @@
-// app/components/NavbarComponent.tsx
+// app/components/navbar/NavbarComponent.tsx
 "use client";
 
+import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import LanguageSwitcher from "@/app/components/LanguageSwitcherComponent";
@@ -24,7 +25,15 @@ export default function NavbarComponent() {
           {t("login")}
         </button>
         <ThemeToggleComponent />
-        <LanguageSwitcher />
+        <Suspense
+          fallback={
+            <div className="join">
+              <span className="join-item btn btn-xs btn-ghost opacity-50">...</span>
+            </div>
+          }
+        >
+          <LanguageSwitcher />
+        </Suspense>
       </div>
     </div>
   );
