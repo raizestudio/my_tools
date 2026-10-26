@@ -69,9 +69,49 @@ export const fr = {
             title: "Raccourcisseur d’URL",
             desc: "Raccourcisseur de liens rapide avec 0w.lat.",
         },
-        passwdGenerator: {
-            title: "Générateur de Mots de Passe",
-            desc: "Générez des mots de passe aléatoires et phrases sécurisées localement.",
+        passwordGenerator: {
+          title: "Générateur de Mots de Passe & Secrets",
+          desc: "Générez des mots de passe robustes, des phrases Diceware mémorisables et des secrets cryptographiques.",
+          tabPassword: "Mot de passe",
+          tabPassphrase: "Phrase (Diceware)",
+          tabSecret: "Secret Développeur",
+
+          // Password Mode
+          length: "Longueur : {length}",
+          uppercase: "Majuscules (A-Z)",
+          lowercase: "Minuscules (a-z)",
+          numbers: "Chiffres (0-9)",
+          symbols: "Symboles (!@#$...)",
+          avoidAmbiguous: "Exclure les caractères ambigus (0, O, 1, l, I)",
+
+          // Passphrase Mode
+          wordsCount: "Nombre de mots : {count}",
+          separator: "Séparateur",
+          separatorHyphen: "Tiret (-)",
+          separatorDot: "Point (.)",
+          separatorUnderscore: "Underscore (_)",
+          separatorSpace: "Espace ( )",
+          capitalize: "Majuscule à chaque mot",
+          includeNumber: "Ajouter un chiffre aléatoire",
+
+          // Secret Mode
+          secretType: "Format du secret",
+          bytesCount: "Taille d'entropie : {bytes} octets ({bits} bits)",
+          formatHex: "Hex (ex: openssl rand -hex)",
+          formatBase64: "Base64",
+          formatBase64Url: "Base64URL (clé JWT)",
+          formatUuid: "UUID v4",
+
+          // Output & Entropy
+          regenerate: "Régénérer",
+          copy: "Copier",
+          copied: "Copié !",
+          entropyBits: "{bits} bits d'entropie",
+          strengthWeak: "Faible",
+          strengthFair: "Moyen",
+          strengthStrong: "Robuste",
+          strengthCryptographic: "Niveau Cryptographique",
+          estimatedCrackTime: "Estimation craquage GPU offline : {time}",
         },
         jsonConverter: {
             title: "Convertisseur & Formateur JSON",

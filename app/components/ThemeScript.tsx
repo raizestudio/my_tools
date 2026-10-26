@@ -12,8 +12,6 @@ const THEME_INIT_SCRIPT = `(function() {
 })();`;
 
 export default function ThemeScript() {
-  // Côté navigateur : après le premier chargement, on renvoie null
-  // pour que React 19 ne voie aucun <script> lors des navigations client.
   if (typeof window !== "undefined") {
     if (hasMounted) return null;
     hasMounted = true;

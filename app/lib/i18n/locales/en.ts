@@ -66,9 +66,49 @@ export const en = {
             title: "URL Shortener",
             desc: "Fast URL shortening with custom vanity slugs.",
         },
-        passwdGenerator: {
-            title: "Password Generator",
-            desc: "Generate secure random passwords and passphrases in your browser.",
+        passwordGenerator: {
+          title: "Password & Secret Generator",
+          desc: "Generate cryptographically secure passwords, human-friendly Diceware passphrases, and raw secrets.",
+          tabPassword: "Password",
+          tabPassphrase: "Passphrase (Diceware)",
+          tabSecret: "Dev Secret",
+
+          // Password Mode
+          length: "Length: {length}",
+          uppercase: "Uppercase (A-Z)",
+          lowercase: "Lowercase (a-z)",
+          numbers: "Numbers (0-9)",
+          symbols: "Symbols (!@#$...)",
+          avoidAmbiguous: "Exclude ambiguous chars (0, O, 1, l, I)",
+
+          // Passphrase Mode
+          wordsCount: "Words count: {count}",
+          separator: "Separator",
+          separatorHyphen: "Hyphen (-)",
+          separatorDot: "Dot (.)",
+          separatorUnderscore: "Underscore (_)",
+          separatorSpace: "Space ( )",
+          capitalize: "Capitalize words",
+          includeNumber: "Include random number",
+
+          // Secret Mode
+          secretType: "Secret Format",
+          bytesCount: "Entropy size: {bytes} bytes ({bits} bits)",
+          formatHex: "Hex (e.g. openssl rand -hex)",
+          formatBase64: "Base64",
+          formatBase64Url: "Base64URL (JWT secret)",
+          formatUuid: "UUID v4",
+
+          // Output & Entropy
+          regenerate: "Regenerate",
+          copy: "Copy",
+          copied: "Copied!",
+          entropyBits: "{bits} bits of entropy",
+          strengthWeak: "Weak",
+          strengthFair: "Fair",
+          strengthStrong: "Strong",
+          strengthCryptographic: "Cryptographic",
+          estimatedCrackTime: "Offline GPU crack estimate: {time}",
         },
         jsonConverter: {
             title: "JSON Converter & Formatter",

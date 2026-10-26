@@ -16,7 +16,7 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
     // --- Security & Privacy ---
     {
         id: "passwd-generator",
-        i18nKey: "passwdGenerator",
+        i18nKey: "passwordGenerator",
         href: "/passwd-generator",
         icon: "icon-[lucide--lock]",
         category: "security",

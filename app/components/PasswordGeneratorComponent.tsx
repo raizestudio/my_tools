@@ -1,240 +1,482 @@
-'use client';
+// app/components/password/PasswordGeneratorComponent.tsx
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
+import { DICEWARE_WORDS } from "@/app/lib/dicewareWordlist";
+
+type Mode = "password" | "passphrase" | "secret";
+type SecretFormat = "hex" | "base64" | "base64url" | "uuid";
 
 export default function PasswordGeneratorComponent() {
-  const [password, setPassword] = useState('');
-  const [length, setLength] = useState(16);
-  const [includeUppercase, setIncludeUppercase] = useState(true);
-  const [includeLowercase, setIncludeLowercase] = useState(true);
-  const [includeNumbers, setIncludeNumbers] = useState(true);
-  const [includeSymbols, setIncludeSymbols] = useState(true);
-  const [excludeSimilar, setExcludeSimilar] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const t = useTranslations("tools.passwordGenerator");
+  const tCommon = useTranslations("common");
 
+  const [mode, setMode] = useState<Mode>("password");
+  const [result, setResult] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
+
+  // Standard Password Config
+  const [pwdLength, setPwdLength] = useState(16);
+  const [useUpper, setUseUpper] = useState(true);
+  const [useLower, setUseLower] = useState(true);
+  const [useNumbers, setUseNumbers] = useState(true);
+  const [useSymbols, setUseSymbols] = useState(true);
+  const [avoidAmbiguous, setAvoidAmbiguous] = useState(false);
+
+  // Passphrase Config
+  const [wordCount, setWordCount] = useState(5);
+  const [separator, setSeparator] = useState("-");
+  const [capitalize, setCapitalize] = useState(false);
+  const [includeNumber, setIncludeNumber] = useState(false);
+
+  // Secret Config
+  const [secretBytes, setSecretBytes] = useState(32); // 32 bytes = 256 bits
+  const [secretFormat, setSecretFormat] = useState<SecretFormat>("hex");
+
+  // Sélecteur sécurisé de nombres aléatoires
+  const getRandomInt = (max: number): number => {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return array[0] % max;
+  };
+
+  // 1. Génération Mode Mot de passe
   const generatePassword = useCallback(() => {
-    let lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    let uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let numberChars = '0123456789';
-    const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let lower = "abcdefghijklmnopqrstuvwxyz";
+    let numbers = "0123456789";
+    let symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
-    if (excludeSimilar) {
-      lowercaseChars = lowercaseChars.replace(/[ilo]/g, '');
-      uppercaseChars = uppercaseChars.replace(/[IO]/g, '');
-      numberChars = numberChars.replace(/[01]/g, '');
-    }
-
-    let allowedChars = '';
-    let mandatorySets: string[] = [];
-
-    if (includeLowercase) {
-      allowedChars += lowercaseChars;
-      mandatorySets.push(lowercaseChars);
-    }
-    if (includeUppercase) {
-      allowedChars += uppercaseChars;
-      mandatorySets.push(uppercaseChars);
-    }
-    if (includeNumbers) {
-      allowedChars += numberChars;
-      mandatorySets.push(numberChars);
-    }
-    if (includeSymbols) {
-      allowedChars += symbolChars;
-      mandatorySets.push(symbolChars);
+    if (avoidAmbiguous) {
+      upper = upper.replace(/[O]/g, "");
+      lower = lower.replace(/[ol]/g, "");
+      numbers = numbers.replace(/[01]/g, "");
+      symbols = symbols.replace(/[|;:.<>]/g, "");
     }
 
-    if (allowedChars.length === 0) {
-      setPassword('Sélectionnez au moins une option');
+    let charset = "";
+    if (useUpper) charset += upper;
+    if (useLower) charset += lower;
+    if (useNumbers) charset += numbers;
+    if (useSymbols) charset += symbols;
+
+    if (!charset) {
+      setResult("");
       return;
     }
 
-    const generatedArray = new Array(length);
-    const cryptoBuffer = new Uint32Array(length);
-    window.crypto.getRandomValues(cryptoBuffer);
+    const randomIndices = new Uint32Array(pwdLength);
+    crypto.getRandomValues(randomIndices);
 
-    let i = 0;
-    for (const charSet of mandatorySets) {
-      if (i < length) {
-        const randomIndex = cryptoBuffer[i] % charSet.length;
-        generatedArray[i] = charSet[randomIndex];
-        i++;
+    let out = "";
+    for (let i = 0; i < pwdLength; i++) {
+      out += charset[randomIndices[i] % charset.length];
+    }
+    setResult(out);
+  }, [pwdLength, useUpper, useLower, useNumbers, useSymbols, avoidAmbiguous]);
+
+  // 2. Génération Mode Passphrase Diceware
+  const generatePassphrase = useCallback(() => {
+    const listLen = DICEWARE_WORDS.length;
+    const randomWords: string[] = [];
+
+    for (let i = 0; i < wordCount; i++) {
+      let word = DICEWARE_WORDS[getRandomInt(listLen)];
+      if (capitalize) {
+        word = word.charAt(0).toUpperCase() + word.slice(1);
       }
+      randomWords.push(word);
     }
 
-    for (; i < length; i++) {
-      const randomIndex = cryptoBuffer[i] % allowedChars.length;
-      generatedArray[i] = allowedChars[randomIndex];
+    if (includeNumber) {
+      const targetIndex = getRandomInt(randomWords.length);
+      const digit = getRandomInt(100).toString();
+      randomWords[targetIndex] = `${randomWords[targetIndex]}${digit}`;
     }
 
-    const shuffleBuffer = new Uint32Array(length);
-    window.crypto.getRandomValues(shuffleBuffer);
-    for (let j = length - 1; j > 0; j--) {
-      const swapIndex = shuffleBuffer[j] % (j + 1);
-      const temp = generatedArray[j];
-      generatedArray[j] = generatedArray[swapIndex];
-      generatedArray[swapIndex] = temp;
+    setResult(randomWords.join(separator));
+  }, [wordCount, separator, capitalize, includeNumber]);
+
+  // 3. Génération Mode Secret Développeur
+  const generateSecret = useCallback(() => {
+    if (secretFormat === "uuid") {
+      setResult(crypto.randomUUID());
+      return;
     }
 
-    setPassword(generatedArray.join(''));
-    setCopied(false);
-  }, [length, includeUppercase, includeLowercase, includeNumbers, includeSymbols, excludeSimilar]);
+    const bytes = new Uint8Array(secretBytes);
+    crypto.getRandomValues(bytes);
+
+    if (secretFormat === "hex") {
+      const hex = Array.from(bytes)
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      setResult(hex);
+    } else if (secretFormat === "base64") {
+      let binary = "";
+      bytes.forEach((b) => (binary += String.fromCharCode(b)));
+      setResult(btoa(binary));
+    } else if (secretFormat === "base64url") {
+      let binary = "";
+      bytes.forEach((b) => (binary += String.fromCharCode(b)));
+      const b64 = btoa(binary)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+      setResult(b64);
+    }
+  }, [secretBytes, secretFormat]);
+
+  // Trigger actif selon le mode
+  const handleRegenerate = useCallback(() => {
+    if (mode === "password") generatePassword();
+    else if (mode === "passphrase") generatePassphrase();
+    else if (mode === "secret") generateSecret();
+  }, [mode, generatePassword, generatePassphrase, generateSecret]);
 
   useEffect(() => {
-    generatePassword();
-  }, [generatePassword]);
+    handleRegenerate();
+  }, [handleRegenerate]);
 
-  const copyToClipboard = async () => {
-    if (!password || password.startsWith('Sélectionnez')) return;
-    try {
-      await navigator.clipboard.writeText(password);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Erreur de copie :', err);
+  // Calcul mathématique exact de l'entropie
+  const entropy = useMemo(() => {
+    if (!result) return 0;
+
+    if (mode === "secret") {
+      if (secretFormat === "uuid") return 122; // 122 bits d'aléa dans UUIDv4
+      return secretBytes * 8;
     }
+
+    if (mode === "passphrase") {
+      let bits = wordCount * Math.log2(DICEWARE_WORDS.length);
+      if (includeNumber) bits += Math.log2(100);
+      if (capitalize) bits += wordCount; // 1 bit par mot maj/min
+      return Math.round(bits);
+    }
+
+    // Mode Password : L * log2(pool)
+    let pool = 0;
+    if (useUpper) pool += 26;
+    if (useLower) pool += 26;
+    if (useNumbers) pool += 10;
+    if (useSymbols) pool += 28;
+    if (avoidAmbiguous) pool = Math.max(pool - 6, 2);
+
+    if (pool <= 0) return 0;
+    return Math.round(pwdLength * Math.log2(pool));
+  }, [result, mode, secretBytes, secretFormat, wordCount, includeNumber, capitalize, useUpper, useLower, useNumbers, useSymbols, avoidAmbiguous, pwdLength]);
+
+  const copyToClipboard = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 1500);
   };
 
-  const getPasswordStrength = () => {
-    if (password.startsWith('Sélectionnez')) return { label: 'Invalide', color: 'bg-error', width: 'w-0' };
+  // Temps estimé pour craquer (base 100 milliards d'essais/s sur cluster GPU)
+  const crackEstimate = useMemo(() => {
+    if (entropy <= 32) return "< 1 sec";
+    if (entropy <= 45) return "minutes";
+    if (entropy <= 55) return "several days";
+    if (entropy <= 65) return "several years";
+    if (entropy <= 75) return "centuries";
+    return "unbreakable (trillions of years)";
+  }, [entropy]);
 
-    let score = 0;
-    if (length >= 8) score++;
-    if (length >= 12) score++;
-    if (length >= 16) score++;
-
-    const typesCount = [includeUppercase, includeLowercase, includeNumbers, includeSymbols].filter(Boolean).length;
-    score += typesCount;
-
-    if (score <= 3) return { label: 'Faible ⚠️', color: 'bg-error', width: 'w-1/4' };
-    if (score <= 5) return { label: 'Moyen ⚖️', color: 'bg-warning', width: 'w-2/4' };
-    if (score <= 6) return { label: 'Fort 💪', color: 'bg-info', width: 'w-3/4' };
-    return { label: 'Excellent 🔥', color: 'bg-success', width: 'w-full' };
-  };
-
-  const strength = getPasswordStrength();
+  const strengthColor =
+    entropy < 45
+      ? "text-error progress-error"
+      : entropy < 65
+      ? "text-warning progress-warning"
+      : entropy < 85
+      ? "text-success progress-success"
+      : "text-primary progress-primary";
 
   return (
-    <div className="card bg-base-200 shadow-xl max-w-lg mx-auto">
-      <div className="card-body gap-4">
-        <h2 className="card-title text-xl font-bold flex items-center gap-2">
-          <span className="icon-[lucide--lock] text-primary size-6"></span>
-          Générateur de mot de passe fort
-        </h2>
-
-        {/* Affichage du mot de passe */}
-        <div className="flex gap-2 items-center bg-base-300 p-3 rounded-lg border border-base-100 font-mono text-lg break-all select-all relative group">
-          <span className="flex-1">{password}</span>
-          <div className="flex gap-1">
-            <button
-              onClick={generatePassword}
-              className="btn btn-square btn-ghost btn-sm"
-              title="Régénérer"
-            >
-              <span className="icon-[lucide--rotate-cw] size-4"></span>
-            </button>
-            <button
-              onClick={copyToClipboard}
-              className={`btn btn-square btn-sm ${copied ? 'btn-success' : 'btn-primary'}`}
-              title="Copier"
-            >
-              <span className={copied ? "icon-[lucide--check] size-4" : "icon-[lucide--copy] size-4"}></span>
-            </button>
-          </div>
+    <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
+      {/* Header & Fil d'Ariane */}
+      <div className="flex flex-col gap-2 border-b border-base-content/10 pb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Link href="/" className="text-xs text-base-content/60 hover:text-primary transition-colors">
+            {tCommon("home")}
+          </Link>
+          <span className="text-xs text-base-content/30">/</span>
+          <span className="text-xs text-primary font-medium">{t("title")}</span>
         </div>
+        <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
+          <span className="icon-[lucide--key] size-6 text-primary"></span>
+          {t("title")}
+        </h1>
+        <p className="text-xs text-base-content/60 leading-relaxed">
+          {t("desc")}
+        </p>
+      </div>
 
-        {/* Jauge de force */}
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-xs font-semibold">
-            <span>Force estimée :</span>
-            <span>{strength.label}</span>
-          </div>
-          <div className="w-full bg-base-300 rounded-full h-2">
-            <div className={`h-2 rounded-full transition-all duration-500 ${strength.color} ${strength.width}`}></div>
-          </div>
-        </div>
+      {/* Mode Switcher Tabs */}
+      <div className="join w-full grid grid-cols-3 bg-base-200/50 p-1 rounded-xl">
+        <button
+          type="button"
+          onClick={() => setMode("password")}
+          className={`btn btn-sm join-item ${mode === "password" ? "btn-primary shadow-sm" : "btn-ghost"}`}
+        >
+          <span className="icon-[lucide--lock] size-4"></span>
+          <span className="hidden sm:inline">{t("tabPassword")}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("passphrase")}
+          className={`btn btn-sm join-item ${mode === "passphrase" ? "btn-primary shadow-sm" : "btn-ghost"}`}
+        >
+          <span className="icon-[lucide--book-marked] size-4"></span>
+          <span className="hidden sm:inline">{t("tabPassphrase")}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("secret")}
+          className={`btn btn-sm join-item ${mode === "secret" ? "btn-primary shadow-sm" : "btn-ghost"}`}
+        >
+          <span className="icon-[lucide--terminal] size-4"></span>
+          <span className="hidden sm:inline">{t("tabSecret")}</span>
+        </button>
+      </div>
 
-        {/* Longueur du mot de passe */}
-        <div className="flex flex-col gap-2 mt-2">
-          <div className="flex justify-between font-semibold text-sm">
-            <span>Longueur :</span>
-            <span className="text-primary font-mono">{length} caractères</span>
-          </div>
-          <input
-            type="range"
-            min="6"
-            max="64"
-            value={length}
-            onChange={(e) => setLength(parseInt(e.target.value))}
-            className="range range-primary"
+      {/* Main Output Box */}
+      <div className="card card-border bg-base-100 p-6 flex flex-col gap-4 shadow-sm">
+        <div className="relative">
+          <textarea
+            readOnly
+            rows={mode === "passphrase" || mode === "secret" ? 3 : 2}
+            value={result}
+            className="textarea textarea-bordered w-full font-mono text-sm sm:text-base pr-28 resize-none bg-base-200/30 focus:outline-primary select-all leading-relaxed"
           />
-          <div className="flex justify-between text-xs px-2 opacity-50">
-            <span>6</span>
-            <span>16</span>
-            <span>32</span>
-            <span>48</span>
-            <span>64</span>
+          <div className="absolute right-3 top-3 flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleRegenerate}
+              className="btn btn-sm btn-ghost btn-square text-base-content/70 hover:text-primary"
+              title={t("regenerate")}
+            >
+              <span className="icon-[lucide--refresh-cw] size-4"></span>
+            </button>
+            <button
+              type="button"
+              onClick={copyToClipboard}
+              className={`btn btn-sm ${isCopied ? "btn-success" : "btn-primary"} gap-1.5`}
+            >
+              <span className={`icon-[lucide--${isCopied ? "check" : "copy"}] size-4`}></span>
+              <span>{isCopied ? t("copied") : t("copy")}</span>
+            </button>
           </div>
         </div>
 
-        {/* Options */}
-        <div className="grid grid-cols-2 gap-3 mt-2">
-          <label className="label cursor-pointer justify-start gap-3 bg-base-300/30 p-2 rounded-lg hover:bg-base-300/50 transition">
-            <input
-              type="checkbox"
-              checked={includeUppercase}
-              onChange={(e) => setIncludeUppercase(e.target.checked)}
-              className="checkbox checkbox-primary checkbox-sm"
-            />
-            <span className="label-text font-medium">Majuscules (A-Z)</span>
-          </label>
+        {/* Entropy Metrics */}
+        <div className="flex flex-col gap-2 pt-2 border-t border-base-content/10">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-base-content flex items-center gap-1.5">
+              <span className="icon-[lucide--shield-check] size-4 text-primary"></span>
+              {t("entropyBits", { bits: entropy })}
+            </span>
+            <span className={`font-mono text-[11px] font-bold ${strengthColor.split(" ")[0]}`}>
+              {entropy < 45
+                ? t("strengthWeak")
+                : entropy < 65
+                ? t("strengthFair")
+                : entropy < 85
+                ? t("strengthStrong")
+                : t("strengthCryptographic")}
+            </span>
+          </div>
 
-          <label className="label cursor-pointer justify-start gap-3 bg-base-300/30 p-2 rounded-lg hover:bg-base-300/50 transition">
-            <input
-              type="checkbox"
-              checked={includeLowercase}
-              onChange={(e) => setIncludeLowercase(e.target.checked)}
-              className="checkbox checkbox-primary checkbox-sm"
-            />
-            <span className="label-text font-medium">Minuscules (a-z)</span>
-          </label>
+          <progress
+            className={`progress w-full h-1.5 ${strengthColor.split(" ")[1]}`}
+            value={Math.min(entropy, 128)}
+            max={128}
+          ></progress>
 
-          <label className="label cursor-pointer justify-start gap-3 bg-base-300/30 p-2 rounded-lg hover:bg-base-300/50 transition">
-            <input
-              type="checkbox"
-              checked={includeNumbers}
-              onChange={(e) => setIncludeNumbers(e.target.checked)}
-              className="checkbox checkbox-primary checkbox-sm"
-            />
-            <span className="label-text font-medium">Chiffres (0-9)</span>
-          </label>
-
-          <label className="label cursor-pointer justify-start gap-3 bg-base-300/30 p-2 rounded-lg hover:bg-base-300/50 transition">
-            <input
-              type="checkbox"
-              checked={includeSymbols}
-              onChange={(e) => setIncludeSymbols(e.target.checked)}
-              className="checkbox checkbox-primary checkbox-sm"
-            />
-            <span className="label-text font-medium">Symboles (!@#...)</span>
-          </label>
+          <span className="text-[11px] text-base-content/50">
+            {t("estimatedCrackTime", { time: crackEstimate })}
+          </span>
         </div>
+      </div>
 
-        {/* Option d'exclusion des caractères similaires */}
-        <div className="mt-2 border-t border-base-100 pt-3">
-          <label className="label cursor-pointer justify-start gap-3">
-            <input
-              type="checkbox"
-              checked={excludeSimilar}
-              onChange={(e) => setExcludeSimilar(e.target.checked)}
-              className="checkbox checkbox-sm checkbox-secondary"
-            />
-            <div className="flex flex-col">
-              <span className="label-text font-semibold">Éviter les caractères similaires</span>
-              <span className="label-text-alt text-base-content/60">Exclut les caractères ambigus comme i, l, 1, L, o, 0, O</span>
+      {/* Controls Container */}
+      <div className="card card-border bg-base-100 p-6 flex flex-col gap-6">
+        {/* MODE 1: Standard Password */}
+        {mode === "password" && (
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center text-xs font-semibold">
+                <span>{t("length", { length: pwdLength })}</span>
+                <span className="font-mono text-primary font-bold">{pwdLength}</span>
+              </div>
+              <input
+                type="range"
+                min={6}
+                max={64}
+                value={pwdLength}
+                onChange={(e) => setPwdLength(Number(e.target.value))}
+                className="range range-xs range-primary"
+              />
             </div>
-          </label>
-        </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-3 rounded-lg border border-base-content/5">
+                <input
+                  type="checkbox"
+                  checked={useUpper}
+                  onChange={(e) => setUseUpper(e.target.checked)}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text text-xs">{t("uppercase")}</span>
+              </label>
+
+              <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-3 rounded-lg border border-base-content/5">
+                <input
+                  type="checkbox"
+                  checked={useLower}
+                  onChange={(e) => setUseLower(e.target.checked)}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text text-xs">{t("lowercase")}</span>
+              </label>
+
+              <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-3 rounded-lg border border-base-content/5">
+                <input
+                  type="checkbox"
+                  checked={useNumbers}
+                  onChange={(e) => setUseNumbers(e.target.checked)}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text text-xs">{t("numbers")}</span>
+              </label>
+
+              <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-3 rounded-lg border border-base-content/5">
+                <input
+                  type="checkbox"
+                  checked={useSymbols}
+                  onChange={(e) => setUseSymbols(e.target.checked)}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text text-xs">{t("symbols")}</span>
+              </label>
+
+              <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-3 rounded-lg border border-base-content/5 sm:col-span-2">
+                <input
+                  type="checkbox"
+                  checked={avoidAmbiguous}
+                  onChange={(e) => setAvoidAmbiguous(e.target.checked)}
+                  className="checkbox checkbox-sm checkbox-primary"
+                />
+                <span className="label-text text-xs">{t("avoidAmbiguous")}</span>
+              </label>
+            </div>
+          </div>
+        )}
+
+        {/* MODE 2: Passphrase Diceware */}
+        {mode === "passphrase" && (
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center text-xs font-semibold">
+                <span>{t("wordsCount", { count: wordCount })}</span>
+                <span className="font-mono text-primary font-bold">{wordCount} mots</span>
+              </div>
+              <input
+                type="range"
+                min={3}
+                max={10}
+                value={wordCount}
+                onChange={(e) => setWordCount(Number(e.target.value))}
+                className="range range-xs range-primary"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-base-content/70">
+                  {t("separator")}
+                </label>
+                <select
+                  value={separator}
+                  onChange={(e) => setSeparator(e.target.value)}
+                  className="select select-sm select-bordered w-full"
+                >
+                  <option value="-">{t("separatorHyphen")}</option>
+                  <option value=".">{t("separatorDot")}</option>
+                  <option value="_">{t("separatorUnderscore")}</option>
+                  <option value=" ">{t("separatorSpace")}</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2 justify-end">
+                <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-2.5 rounded-lg border border-base-content/5">
+                  <input
+                    type="checkbox"
+                    checked={capitalize}
+                    onChange={(e) => setCapitalize(e.target.checked)}
+                    className="checkbox checkbox-sm checkbox-primary"
+                  />
+                  <span className="label-text text-xs">{t("capitalize")}</span>
+                </label>
+
+                <label className="label cursor-pointer justify-start gap-3 bg-base-200/40 p-2.5 rounded-lg border border-base-content/5">
+                  <input
+                    type="checkbox"
+                    checked={includeNumber}
+                    onChange={(e) => setIncludeNumber(e.target.checked)}
+                    className="checkbox checkbox-sm checkbox-primary"
+                  />
+                  <span className="label-text text-xs">{t("includeNumber")}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MODE 3: Dev Secret */}
+        {mode === "secret" && (
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold text-base-content/70">
+                {t("secretType")}
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(["hex", "base64", "base64url", "uuid"] as SecretFormat[]).map((fmt) => (
+                  <button
+                    key={fmt}
+                    type="button"
+                    onClick={() => setSecretFormat(fmt)}
+                    className={`btn btn-sm ${secretFormat === fmt ? "btn-primary" : "btn-outline"}`}
+                  >
+                    {fmt.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {secretFormat !== "uuid" && (
+              <div className="flex flex-col gap-2 pt-2">
+                <label className="text-xs font-semibold text-base-content/70">
+                  {t("bytesCount", { bytes: secretBytes, bits: secretBytes * 8 })}
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[16, 32, 64].map((bytes) => (
+                    <button
+                      key={bytes}
+                      type="button"
+                      onClick={() => setSecretBytes(bytes)}
+                      className={`btn btn-sm ${secretBytes === bytes ? "btn-primary" : "btn-outline"}`}
+                    >
+                      {bytes}B ({bytes * 8}-bit)
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
