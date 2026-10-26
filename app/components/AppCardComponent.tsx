@@ -1,6 +1,8 @@
 // app/components/AppCardComponent.tsx
 import Link from "next/link";
 
+export type ToolCategory = 'security' | 'developer' | 'network';
+
 export interface AppItem {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface AppItem {
   icon: string;
   description: string;
   networkRequired: boolean;
+  category: ToolCategory;
 }
 
 interface AppCardProps {
