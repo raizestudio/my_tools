@@ -1,34 +1,41 @@
+// app/components/secret/SecretCreateComponent.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import { generateAesKey, exportKeyToBase64, encryptSecret } from '@/app/lib/crypto';
 
 export default function SecretCreateComponent() {
+  const t = useTranslations('tools.secretShare');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+
   const [content, setContent] = useState('');
-  const [ttl, setTtl] = useState(3600); // 1 hour default
+  const [ttl, setTtl] = useState(3600); // 1h par défaut
   const [maxViews, setMaxViews] = useState(1);
   const [loading, setLoading] = useState(false);
   const [secretUrl, setSecretUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const handleCreate = async (e: React.SubmitEvent) => {
+  const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!content.trim() || loading) return;
 
     setLoading(true);
     setError(null);
     setSecretUrl(null);
 
     try {
-      // 1. Generate AES-256 key locally
+      // 1. Génération de la clé AES-256 dans le navigateur
       const key = await generateAesKey();
       const b64Key = await exportKeyToBase64(key);
 
-      // 2. Encrypt locally
+      // 2. Chiffrement AES-GCM local
       const { ciphertext, iv } = await encryptSecret(content, key);
 
-      // 3. Send encrypted payload to FastAPI
+      // 3. Envoi du payload chiffré au backend
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const res = await fetch(`${apiUrl}/secrets`, {
         method: 'POST',
@@ -42,17 +49,21 @@ export default function SecretCreateComponent() {
       });
 
       if (!res.ok) {
-        throw new Error('Échec de la création du secret sur le serveur.');
+        throw new Error(t('serverError'));
       }
 
       const data = await res.json();
 
-      // 4. Construct URL with key in the hash fragment (#)
-      const shareUrl = `${window.location.origin}/s/${data.id}#${b64Key}`;
+      // 4. Construction de l'URL préfixée par la locale avec la clé dans le hash (#)
+      const shareUrl = `${window.location.origin}/${locale}/s/${data.id}#${b64Key}`;
       setSecretUrl(shareUrl);
       setContent('');
-    } catch (err: any) {
-      setError(err?.message || 'Erreur inattendue.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError(t('unexpectedError'));
+      }
     } finally {
       setLoading(false);
     }
@@ -62,124 +73,168 @@ export default function SecretCreateComponent() {
     if (!secretUrl) return;
     await navigator.clipboard.writeText(secretUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  const handleReset = () => {
+    setSecretUrl(null);
+    setContent('');
+    setError(null);
   };
 
   return (
-    <div className="card bg-base-200 border border-base-300 shadow-xl max-w-2xl mx-auto w-full">
-      <div className="card-body gap-5 p-4 sm:p-8">
-
-        <div>
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <span className="icon-[lucide--shield-alert] text-primary size-6"></span>
-            Partage de Secret Chiffré
-          </h2>
-          <p className="text-xs text-base-content/70 mt-1">
-            Chiffrement AES-GCM 256 bits côté client. La clé réside dans le fragment d'URL et n'est jamais transmise au serveur.
-          </p>
+    <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
+      {/* Header & Fil d'Ariane */}
+      <div className="flex flex-col gap-2 border-b border-base-content/10 pb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Link
+            href="/"
+            className="text-xs text-base-content/60 hover:text-primary transition-colors"
+          >
+            {tCommon('home')}
+          </Link>
+          <span className="text-xs text-base-content/30">/</span>
+          <span className="text-xs text-primary font-medium">{t('title')}</span>
         </div>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
+            <span className="icon-[lucide--shield-alert] size-6 text-primary"></span>
+            {t('title')}
+          </h1>
+          <span className="badge badge-sm badge-soft badge-success">
+            {t('zeroKnowledgeBadge')}
+          </span>
+        </div>
+        <p className="text-xs text-base-content/60 leading-relaxed">
+          {t('desc')}
+        </p>
+      </div>
 
-        {!secretUrl ? (
-          <form onSubmit={handleCreate} className="flex flex-col gap-4">
+      {/* Main Content Area */}
+      {!secretUrl ? (
+        <form onSubmit={handleCreate} className="card card-border bg-base-100 p-6 flex flex-col gap-6 shadow-sm">
+          {/* Zone de texte */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-base-content/70">
+              {t('messageLabel')}
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder={t('messagePlaceholder')}
+              rows={7}
+              required
+              className="textarea textarea-bordered font-mono text-xs w-full resize-y focus:outline-primary leading-relaxed"
+            />
+          </div>
+
+          {/* Options TTL & Lectures */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold">Message ou informations d'identification</label>
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Collez ici vos identifiants, tokens d'API ou notes confidentielles..."
-                rows={6}
-                required
-                className="textarea textarea-bordered font-mono text-xs w-full"
-              />
+              <label className="text-xs font-semibold text-base-content/70">
+                {t('expirationLabel')}
+              </label>
+              <select
+                value={ttl}
+                onChange={(e) => setTtl(Number(e.target.value))}
+                className="select select-sm select-bordered w-full"
+              >
+                <option value={600}>{t('ttl10m')}</option>
+                <option value={3600}>{t('ttl1h')}</option>
+                <option value={86400}>{t('ttl24h')}</option>
+                <option value={604800}>{t('ttl7d')}</option>
+              </select>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold">Expiration</label>
-                <select
-                  value={ttl}
-                  onChange={(e) => setTtl(Number(e.target.value))}
-                  className="select select-sm select-bordered"
-                >
-                  <option value={600}>10 minutes</option>
-                  <option value={3600}>1 heure</option>
-                  <option value={86400}>24 heures</option>
-                  <option value={604800}>7 jours</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold">Nombre de lectures autorisées</label>
-                <select
-                  value={maxViews}
-                  onChange={(e) => setMaxViews(Number(e.target.value))}
-                  className="select select-sm select-bordered"
-                >
-                  <option value={1}>1 lecture (Autodestruction immédiate)</option>
-                  <option value={2}>2 lectures</option>
-                  <option value={5}>5 lectures</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-base-content/70">
+                {t('viewsLabel')}
+              </label>
+              <select
+                value={maxViews}
+                onChange={(e) => setMaxViews(Number(e.target.value))}
+                className="select select-sm select-bordered w-full"
+              >
+                <option value={1}>{t('views1')}</option>
+                <option value={2}>{t('views2')}</option>
+                <option value={5}>{t('views5')}</option>
+              </select>
             </div>
+          </div>
 
-            {error && (
-              <div className="alert alert-soft alert-error text-xs">
-                <span className="icon-[lucide--alert-circle] size-4"></span>
-                <span>{error}</span>
-              </div>
-            )}
+          {error && (
+            <div className="alert alert-soft alert-error text-xs">
+              <span className="icon-[lucide--alert-circle] size-4"></span>
+              <span>{error}</span>
+            </div>
+          )}
 
+          {/* Bouton de soumission */}
+          <div className="flex justify-end pt-2">
             <button
               type="submit"
               disabled={loading || !content.trim()}
-              className="btn btn-primary mt-2"
+              className="btn btn-primary btn-sm gap-2 w-full sm:w-auto"
             >
               {loading ? (
                 <>
-                  <span className="icon-[lucide--loader-2] size-4 animate-spin"></span>
-                  Chiffrement en cours...
+                  <span className="loading loading-spinner size-4"></span>
+                  {t('encrypting')}
                 </>
               ) : (
-                'Générer le lien sécurisé'
+                <>
+                  <span className="icon-[lucide--lock] size-4"></span>
+                  {t('submit')}
+                </>
               )}
             </button>
-          </form>
-        ) : (
-          <div className="flex flex-col gap-4 animate-in fade-in duration-300">
-            <div className="alert alert-soft alert-success text-xs">
-              <span className="icon-[lucide--check-circle] size-4"></span>
-              <span>Le secret a été chiffré et le payload enregistré.</span>
+          </div>
+        </form>
+      ) : (
+        /* État post-génération : Affichage du lien sécurisé */
+        <div className="card card-border bg-base-100 p-6 flex flex-col gap-5 shadow-sm animate-in fade-in duration-200">
+          <div className="alert alert-soft alert-success flex items-start gap-3 p-4">
+            <span className="icon-[lucide--check-circle-2] size-5 text-success shrink-0 mt-0.5"></span>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-bold text-xs text-base-content">{t('successTitle')}</span>
+              <span className="text-[11px] text-base-content/70 leading-normal">{t('successDesc')}</span>
             </div>
+          </div>
 
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-semibold">Lien de déchiffrement unique :</span>
-              <div className="flex items-center gap-2 bg-base-100 p-2.5 rounded-lg border border-base-300">
-                <input
-                  type="text"
-                  readOnly
-                  value={secretUrl}
-                  className="bg-transparent font-mono text-xs flex-1 outline-none text-primary truncate"
-                />
-                <button
-                  onClick={copyToClipboard}
-                  className={`btn btn-sm ${copied ? 'btn-success' : 'btn-outline'}`}
-                >
-                  <span className={copied ? 'icon-[lucide--check] size-4' : 'icon-[lucide--copy] size-4'}></span>
-                  {copied ? 'Copié' : 'Copier'}
-                </button>
-              </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold text-base-content/70">
+              {t('urlLabel')}
+            </label>
+            <div className="flex items-center gap-2 bg-base-200/50 p-2 rounded-lg border border-base-content/10">
+              <input
+                type="text"
+                readOnly
+                value={secretUrl}
+                className="bg-transparent font-mono text-xs flex-1 outline-none text-primary select-all px-2"
+              />
+              <button
+                type="button"
+                onClick={copyToClipboard}
+                className={`btn btn-xs sm:btn-sm ${copied ? 'btn-success' : 'btn-primary'} gap-1.5 shrink-0`}
+              >
+                <span className={`icon-[lucide--${copied ? 'check' : 'copy'}] size-3.5`}></span>
+                <span>{copied ? t('copied') : t('copy')}</span>
+              </button>
             </div>
+          </div>
 
+          <div className="flex items-center justify-between pt-2 border-t border-base-content/10">
             <button
-              onClick={() => setSecretUrl(null)}
-              className="btn btn-ghost btn-sm self-start mt-2"
+              type="button"
+              onClick={handleReset}
+              className="btn btn-ghost btn-sm text-base-content/70 gap-1.5"
             >
-              Créer un autre secret
+              <span className="icon-[lucide--plus] size-4"></span>
+              {t('newSecret')}
             </button>
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
     </div>
   );
 }
