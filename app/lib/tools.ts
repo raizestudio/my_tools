@@ -1,0 +1,69 @@
+// app/lib/tools.ts
+import { Dictionary } from "@/app/lib/i18n/types";
+
+export type ToolCategory = "security" | "developer" | "network";
+
+export interface ToolItem {
+  id: string;
+  i18nKey: keyof Dictionary["tools"];
+  href: string;
+  icon: string;
+  category: ToolCategory;
+  networkRequired: boolean;
+}
+
+export const AVAILABLE_TOOLS: ToolItem[] = [
+  // --- Security & Privacy ---
+  {
+    id: "passwd-generator",
+    i18nKey: "passwdGenerator",
+    href: "/passwd-generator",
+    icon: "icon-[lucide--lock]",
+    category: "security",
+    networkRequired: false,
+  },
+  {
+    id: "secret-share",
+    i18nKey: "secretShare",
+    href: "/secret-share",
+    icon: "icon-[lucide--shield-alert]",
+    category: "security",
+    networkRequired: true,
+  },
+
+  // --- Developer Utilities ---
+  {
+    id: "json-converter",
+    i18nKey: "jsonConverter",
+    href: "/json-converter",
+    icon: "icon-[lucide--code-xml]",
+    category: "developer",
+    networkRequired: false,
+  },
+  {
+    id: "webhook-catcher",
+    i18nKey: "webhookCatcher",
+    href: "/webhook-catcher",
+    icon: "icon-[lucide--radio]",
+    category: "developer",
+    networkRequired: true,
+  },
+
+  // --- Web & Network ---
+  {
+    id: "url-shtnr",
+    i18nKey: "urlShortener",
+    href: "/url-shtnr",
+    icon: "icon-[lucide--link-2]",
+    category: "network",
+    networkRequired: true,
+  },
+  {
+    id: "qr-code",
+    i18nKey: "qrCode",
+    href: "/qr-code",
+    icon: "icon-[lucide--qr-code]",
+    category: "network",
+    networkRequired: false,
+  },
+];
