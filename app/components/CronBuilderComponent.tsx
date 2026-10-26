@@ -93,6 +93,7 @@ export default function CronBuilderComponent() {
   }, [cronExpression, segments.isValidLength, humanReadable, now]);
 
   const formatCountdown = (target: Date) => {
+    if (!now) return "—";
     const diffMs = target.getTime() - now.getTime();
     if (diffMs <= 0) return isFr ? "À l'instant" : "Just now";
 
