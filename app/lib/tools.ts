@@ -30,6 +30,14 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "security",
         networkRequired: true,
     },
+    {
+      id: "exif-cleaner",
+      href: "/exif-cleaner",
+      icon: "icon-[lucide--image-minus]",
+      category: "security",
+      i18nKey: "exifCleaner",
+      networkRequired: false,
+    },
 
     // --- Developer Utilities ---
     {
