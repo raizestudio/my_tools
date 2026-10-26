@@ -51,7 +51,6 @@ export default function CronBuilderComponent() {
     { key: "presetMonthlyFirst", expression: "0 0 1 * *" },
   ];
 
-  // Décomposition des 5 champs
   const segments = useMemo(() => {
     const parts = cronExpression.trim().split(/\s+/);
     return {
@@ -64,7 +63,6 @@ export default function CronBuilderComponent() {
     };
   }, [cronExpression]);
 
-  // Explication en langage naturel via cronstrue
   const humanReadable = useMemo(() => {
     if (!segments.isValidLength) return null;
     try {
@@ -77,7 +75,6 @@ export default function CronBuilderComponent() {
     }
   }, [cronExpression, segments.isValidLength, isFr]);
 
-  // Calcul des 8 prochaines exécutions via cron-parser
   const upcomingDates = useMemo(() => {
     if (!segments.isValidLength || !humanReadable || !now) return [];
     try {
@@ -95,7 +92,6 @@ export default function CronBuilderComponent() {
     }
   }, [cronExpression, segments.isValidLength, humanReadable, now]);
 
-  // Formatage du compte à rebours
   const formatCountdown = (target: Date) => {
     const diffMs = target.getTime() - now.getTime();
     if (diffMs <= 0) return isFr ? "À l'instant" : "Just now";
@@ -112,7 +108,6 @@ export default function CronBuilderComponent() {
     return `${seconds}s`;
   };
 
-  // Snippets de configuration prêts à l'emploi
   const snippetCode = useMemo(() => {
     const expr = cronExpression.trim();
     switch (activeSnippetTab) {

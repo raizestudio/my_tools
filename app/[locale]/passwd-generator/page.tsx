@@ -1,4 +1,4 @@
-// app/passwd-generator/page.tsx
+// app/[locale]/passwd-generator/page.tsx
 import type { Metadata } from 'next';
 import PasswordGeneratorComponent from "@/app/components/PasswordGeneratorComponent";
 

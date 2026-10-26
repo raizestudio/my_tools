@@ -40,7 +40,6 @@ export default function HarSanitizerComponent() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [result, setResult] = useState<HarAnalysisResult | null>(null);
 
-  // Filtres et inspection
   const [searchTerm, setSearchTerm] = useState("");
   const [methodFilter, setMethodFilter] = useState("ALL");
   const [selectedEntry, setSelectedEntry] = useState<PreviewEntry | null>(null);
@@ -68,7 +67,6 @@ export default function HarSanitizerComponent() {
     setIsProcessing(true);
     setErrorMessage(null);
 
-    // Initialisation du Worker via Blob (100% autonome, zéro config bundler)
     if (workerRef.current) {
       workerRef.current.terminate();
     }
@@ -144,7 +142,6 @@ export default function HarSanitizerComponent() {
     if (e.target.files?.[0]) processFile(e.target.files[0]);
   };
 
-  // Filtrage ultra-rapide des requêtes
   const filteredEntries = useMemo(() => {
     if (!result) return [];
     return result.previewList.filter((item) => {

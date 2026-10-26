@@ -1,4 +1,4 @@
-// app/tools/url-shortener/page.tsx
+// app/[locale]/tools/url-shortener/page.tsx
 import type { Metadata } from "next";
 import UrlShortenerComponent from "@/app/components/UrlShortenerComponent";
 

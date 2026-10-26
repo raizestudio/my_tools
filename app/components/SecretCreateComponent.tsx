@@ -1,4 +1,4 @@
-// app/components/secret/SecretCreateComponent.tsx
+// app/components/SecretCreateComponent.tsx
 'use client';
 
 import { useState, FormEvent } from 'react';
@@ -13,7 +13,7 @@ export default function SecretCreateComponent() {
   const locale = useLocale();
 
   const [content, setContent] = useState('');
-  const [ttl, setTtl] = useState(3600); // 1h par défaut
+  const [ttl, setTtl] = useState(3600);
   const [maxViews, setMaxViews] = useState(1);
   const [loading, setLoading] = useState(false);
   const [secretUrl, setSecretUrl] = useState<string | null>(null);
@@ -29,14 +29,11 @@ export default function SecretCreateComponent() {
     setSecretUrl(null);
 
     try {
-      // 1. Génération de la clé AES-256 dans le navigateur
       const key = await generateAesKey();
       const b64Key = await exportKeyToBase64(key);
 
-      // 2. Chiffrement AES-GCM local
       const { ciphertext, iv } = await encryptSecret(content, key);
 
-      // 3. Envoi du payload chiffré au backend
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const res = await fetch(`${apiUrl}/secrets`, {
         method: 'POST',
@@ -55,7 +52,6 @@ export default function SecretCreateComponent() {
 
       const data = await res.json();
 
-      // 4. Construction de l'URL préfixée par la locale avec la clé dans le hash (#)
       const shareUrl = `${window.location.origin}/${locale}/s/${data.id}#${b64Key}`;
       setSecretUrl(shareUrl);
       setContent('');

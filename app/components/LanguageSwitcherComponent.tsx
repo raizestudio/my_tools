@@ -15,7 +15,6 @@ export default function LanguageSwitcher() {
     if (nextLocale === locale) return;
 
     startTransition(() => {
-      // Conserve la route actuelle (ex: /fr/jwt-inspector -> /en/jwt-inspector)
       router.replace(pathname, { locale: nextLocale });
     });
   };

@@ -1,4 +1,4 @@
-// app/components/url/UrlShortenerComponent.tsx
+// app/components/UrlShortenerComponent.tsx
 "use client";
 
 import { useState, FormEvent } from "react";

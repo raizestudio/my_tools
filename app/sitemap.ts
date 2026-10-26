@@ -4,7 +4,6 @@ import { routing } from "@/i18n/routing";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://0w.lat";
 
-// Liste centralisée des slugs statiques
 const toolSlugs = [
   "json-converter",
   "url-shtnr",
@@ -26,7 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const isRoot = path === "";
     const segment = isRoot ? "" : `/${path}`;
 
-    // Crée une entrée pour chaque langue avec ses balises alternates associées
     return routing.locales.map((locale) => ({
       url: `${siteUrl}/${locale}${segment}`,
       lastModified,

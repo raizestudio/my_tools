@@ -1,4 +1,4 @@
-// app/components/qr/QrCodeGeneratorComponent.tsx
+// app/components/QrCodeGeneratorComponent.tsx
 "use client";
 
 import { useState, useRef, useMemo } from "react";
@@ -12,12 +12,11 @@ type Mode = "wifi" | "url" | "text";
 type AuthType = "WPA" | "WEP" | "nopass";
 type ErrorLevel = "L" | "M" | "Q" | "H";
 
-// Limites physiques maximales d'un QR code (Version 40 en mode binaire)
 const QR_MAX_BYTES: Record<ErrorLevel, number> = {
-  L: 2950, // Faible (~7% de récupération)
-  M: 2330, // Moyenne (~15% de récupération)
-  Q: 1660, // Quartile (~25% de récupération)
-  H: 1270, // Haute (~30% de récupération)
+  L: 2950,
+  M: 2330,
+  Q: 1660,
+  H: 1270,
 };
 
 export default function QrCodeGeneratorComponent() {
@@ -59,7 +58,6 @@ export default function QrCodeGeneratorComponent() {
 
   const qrValue = mode === "wifi" ? getWifiString() : textContent;
 
-  // Calcul réel de la taille en octets
   const byteLength = useMemo(() => {
     return new TextEncoder().encode(qrValue).length;
   }, [qrValue]);

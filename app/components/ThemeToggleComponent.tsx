@@ -23,7 +23,6 @@ export default function ThemeToggle() {
     localStorage.setItem('theme', nextTheme);
   };
 
-  // Évite tout décalage d'hydratation (SSR) avant le premier rendu client
   if (!mounted) {
     return <div className="size-7" />;
   }

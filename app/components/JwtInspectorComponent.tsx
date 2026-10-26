@@ -1,4 +1,4 @@
-// app/components/jwt/JwtInspectorComponent.tsx
+// app/components/JwtInspectorComponent.tsx
 "use client";
 
 import { useState, useMemo, useEffect } from "react";

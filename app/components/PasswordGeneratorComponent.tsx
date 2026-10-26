@@ -1,4 +1,4 @@
-// app/components/password/PasswordGeneratorComponent.tsx
+// app/components/PasswordGeneratorComponent.tsx
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -19,7 +19,6 @@ export default function PasswordGeneratorComponent() {
   const [result, setResult] = useState("");
   const [isCopied, setIsCopied] = useState(false);
 
-  // Standard Password Config
   const [pwdLength, setPwdLength] = useState(16);
   const [useUpper, setUseUpper] = useState(true);
   const [useLower, setUseLower] = useState(true);
@@ -27,24 +26,20 @@ export default function PasswordGeneratorComponent() {
   const [useSymbols, setUseSymbols] = useState(true);
   const [avoidAmbiguous, setAvoidAmbiguous] = useState(false);
 
-  // Passphrase Config
   const [wordCount, setWordCount] = useState(5);
   const [separator, setSeparator] = useState("-");
   const [capitalize, setCapitalize] = useState(false);
   const [includeNumber, setIncludeNumber] = useState(false);
 
-  // Secret Config
   const [secretBytes, setSecretBytes] = useState(32); // 32 bytes = 256 bits
   const [secretFormat, setSecretFormat] = useState<SecretFormat>("hex");
 
-  // Sélecteur sécurisé de nombres aléatoires
   const getRandomInt = (max: number): number => {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     return array[0] % max;
   };
 
-  // 1. Génération Mode Mot de passe
   const generatePassword = useCallback(() => {
     let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let lower = "abcdefghijklmnopqrstuvwxyz";
@@ -79,7 +74,6 @@ export default function PasswordGeneratorComponent() {
     setResult(out);
   }, [pwdLength, useUpper, useLower, useNumbers, useSymbols, avoidAmbiguous]);
 
-  // 2. Génération Mode Passphrase Diceware
   const generatePassphrase = useCallback(() => {
     const listLen = DICEWARE_WORDS.length;
     const randomWords: string[] = [];
@@ -101,7 +95,6 @@ export default function PasswordGeneratorComponent() {
     setResult(randomWords.join(separator));
   }, [wordCount, separator, capitalize, includeNumber]);
 
-  // 3. Génération Mode Secret Développeur
   const generateSecret = useCallback(() => {
     if (secretFormat === "uuid") {
       setResult(crypto.randomUUID());
@@ -131,7 +124,6 @@ export default function PasswordGeneratorComponent() {
     }
   }, [secretBytes, secretFormat]);
 
-  // Trigger actif selon le mode
   const handleRegenerate = useCallback(() => {
     if (mode === "password") generatePassword();
     else if (mode === "passphrase") generatePassphrase();
@@ -142,19 +134,18 @@ export default function PasswordGeneratorComponent() {
     handleRegenerate();
   }, [handleRegenerate]);
 
-  // Calcul mathématique exact de l'entropie
   const entropy = useMemo(() => {
     if (!result) return 0;
 
     if (mode === "secret") {
-      if (secretFormat === "uuid") return 122; // 122 bits d'aléa dans UUIDv4
+      if (secretFormat === "uuid") return 122;
       return secretBytes * 8;
     }
 
     if (mode === "passphrase") {
       let bits = wordCount * Math.log2(DICEWARE_WORDS.length);
       if (includeNumber) bits += Math.log2(100);
-      if (capitalize) bits += wordCount; // 1 bit par mot maj/min
+      if (capitalize) bits += wordCount;
       return Math.round(bits);
     }
 
@@ -191,7 +182,6 @@ export default function PasswordGeneratorComponent() {
     setTimeout(() => setIsCopied(false), 1500);
   };
 
-  // Temps estimé pour craquer (base 100 milliards d'essais/s sur cluster GPU)
   const crackEstimate = useMemo(() => {
     if (entropy <= 32) return "< 1 sec";
     if (entropy <= 45) return "minutes";

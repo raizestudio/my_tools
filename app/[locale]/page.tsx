@@ -1,4 +1,4 @@
-// app/page.tsx
+// app/[locale]/page.tsx
 import DashboardGrid from "@/app/components/DashboardGridComponent";
 import { AVAILABLE_TOOLS } from "@/app/lib/tools";
 

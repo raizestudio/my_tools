@@ -1,4 +1,4 @@
-// app/s/[id]/page.tsx
+// app/[locale]/s/[id]/page.tsx
 'use client';
 
 import { useState, Suspense } from 'react';

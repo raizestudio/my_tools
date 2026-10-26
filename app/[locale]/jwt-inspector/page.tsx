@@ -1,4 +1,4 @@
-// app/jwt-inspector/page.tsx
+// app/[locale]/jwt-inspector/page.tsx
 import type { Metadata } from 'next';
 import JwtInspectorComponent from '@/app/components/JwtInspectorComponent';
 

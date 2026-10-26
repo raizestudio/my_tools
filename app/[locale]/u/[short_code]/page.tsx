@@ -1,4 +1,4 @@
-// app/u/[short_code]/page.tsx
+// app/[locale]/u/[short_code]/page.tsx
 import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 

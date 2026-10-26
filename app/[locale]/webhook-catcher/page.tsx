@@ -1,4 +1,4 @@
-// app/tools/webhook-catcher/page.tsx
+// app/[locale]/webhook-catcher/page.tsx
 import type { Metadata } from 'next';
 import WebhookCatcherComponent from '@/app/components/WebhookCatcherComponent';
 

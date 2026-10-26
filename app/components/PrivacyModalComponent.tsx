@@ -29,7 +29,6 @@ export default function PrivacyModalComponent() {
 
   if (!isOpen) return null;
 
-  // Récupère le tableau d'objets déclaré dans le dictionnaire
   const points = (tPrivacy.raw('points') ?? []) as PrivacyPoint[];
 
   return (

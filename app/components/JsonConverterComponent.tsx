@@ -1,4 +1,4 @@
-// app/components/json/JsonConverterComponent.tsx
+// app/components/JsonConverterComponent.tsx
 "use client";
 
 import { useState, useMemo } from "react";
@@ -27,8 +27,6 @@ const DEFAULT_SAMPLE_JSON = JSON.stringify(
   2,
 );
 
-// --- Helpers de typage & conventions de nommage ---
-
 function toPascalCase(str: string): string {
   return (
     str
@@ -41,8 +39,6 @@ function toPascalCase(str: string): string {
 function isValidIdentifier(key: string): boolean {
   return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key);
 }
-
-// --- Générateur TypeScript ---
 
 function generateTypeScript(rootName: string, jsonVal: unknown): string {
   const definitions: string[] = [];
@@ -92,8 +88,6 @@ function generateTypeScript(rootName: string, jsonVal: unknown): string {
 
   return definitions.join("\n\n").trim();
 }
-
-// --- Générateur Python (Pydantic v2) ---
 
 function generatePydantic(rootName: string, jsonVal: unknown): string {
   const definitions: string[] = [];
@@ -197,8 +191,6 @@ function generatePydantic(rootName: string, jsonVal: unknown): string {
   return `${header}${definitions.join("\n\n")}`.trim();
 }
 
-// --- Composant Principal ---
-
 export default function JsonConverterComponent() {
   const t = useTranslations("tools.jsonConverter");
   const tCommon = useTranslations("common");
@@ -208,7 +200,6 @@ export default function JsonConverterComponent() {
   const [activeTab, setActiveTab] = useState<TargetOutput>("typescript");
   const [copied, setCopied] = useState(false);
 
-  // Analyse et génération mémorisées
   const { parsedJson, jsonError, outputResult } = useMemo(() => {
     let parsed: unknown = null;
     let error: string | null = null;

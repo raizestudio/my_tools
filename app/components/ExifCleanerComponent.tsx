@@ -60,7 +60,6 @@ export default function ExifCleanerComponent() {
         return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
     };
 
-    // Étape 1 : Inspection du fichier original
     const handleInspect = async (file: File) => {
         if (!file.type.startsWith("image/")) return;
 
@@ -148,7 +147,6 @@ export default function ExifCleanerComponent() {
         }
     };
 
-    // Étape 2 : Nettoyage physique sur Canvas & Déclenchement du téléchargement
     const handleCleanAndDownload = async () => {
         if (!loadedFile) return;
 
@@ -197,7 +195,6 @@ export default function ExifCleanerComponent() {
                         downloadUrl,
                     });
 
-                    // Déclenche automatiquement le téléchargement
                     const link = document.createElement("a");
                     link.href = downloadUrl;
                     link.download = finalName;
