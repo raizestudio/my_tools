@@ -80,6 +80,14 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
     category: "developer",
     networkRequired: false,
   },
+  {
+    id: "cron-builder",
+    i18nKey: "cronBuilder",
+    href: "/cron-builder",
+    icon: "icon-[lucide--clock]",
+    category: "developer",
+    networkRequired: false,
+  },
 
   // --- Web & Network ---
   {
