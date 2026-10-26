@@ -20,7 +20,7 @@ export default function NavbarComponent() {
       <div className="navbar-center">
         {/*<button className="btn btn-sm">Apps</button>*/}
       </div>
-      <div className="navbar-end gap-4">
+      <div className="navbar-end items-center gap-4">
         <button className="btn btn-sm btn-primary" disabled>
           {t("login")}
         </button>

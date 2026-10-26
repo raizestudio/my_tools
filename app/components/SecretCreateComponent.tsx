@@ -5,6 +5,7 @@ import { useState, FormEvent } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { generateAesKey, exportKeyToBase64, encryptSecret } from '@/app/lib/crypto';
+import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
 export default function SecretCreateComponent() {
   const t = useTranslations('tools.secretShare');
@@ -85,30 +86,16 @@ export default function SecretCreateComponent() {
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
       {/* Header & Fil d'Ariane */}
-      <div className="flex flex-col gap-2 border-b border-base-content/10 pb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Link
-            href="/"
-            className="text-xs text-base-content/60 hover:text-primary transition-colors"
-          >
-            {tCommon('home')}
-          </Link>
-          <span className="text-xs text-base-content/30">/</span>
-          <span className="text-xs text-primary font-medium">{t('title')}</span>
-        </div>
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
-            <span className="icon-[lucide--shield-alert] size-6 text-primary"></span>
-            {t('title')}
-          </h1>
+      <ToolHeader
+        title={t("title")}
+        description={t("desc")}
+        icon="icon-[lucide--shield-alert]"
+        badge={
           <span className="badge badge-sm badge-soft badge-success">
             {t('zeroKnowledgeBadge')}
           </span>
-        </div>
-        <p className="text-xs text-base-content/60 leading-relaxed">
-          {t('desc')}
-        </p>
-      </div>
+        }
+      />
 
       {/* Main Content Area */}
       {!secretUrl ? (

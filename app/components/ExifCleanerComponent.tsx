@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import exifr from "exifr";
 import { Link } from "@/i18n/routing";
 
+import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
+
 interface ExifDetails {
     make?: string;
     model?: string;
@@ -239,29 +241,12 @@ export default function ExifCleanerComponent() {
 
     return (
         <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
-            {/* Header */}
-            <div className="flex flex-col gap-2 border-b border-base-content/10 pb-6">
-                <div className="flex items-center gap-2 mb-1">
-                    <Link
-                        href="/"
-                        className="text-xs text-base-content/60 hover:text-primary transition-colors"
-                    >
-                        {tCommon("home")}
-                    </Link>
-                    <span className="text-xs text-base-content/30">/</span>
-                    <span className="text-xs text-primary font-medium">
-                        {t("title")}
-                    </span>
-                </div>
-                <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
-                    <span className="icon-[lucide--image-minus] size-6 text-primary"></span>
-                    {t("title")}
-                </h1>
-                <p className="text-xs text-base-content/60 leading-relaxed">
-                    {t("desc")}
-                </p>
-            </div>
-
+            {/* Header & Fil d'Ariane */}
+            <ToolHeader
+              title={t("title")}
+              description={t("desc")}
+              icon="icon-[lucide--image-minus]"
+            />
             {/* Zone 1 : Dépôt de fichier */}
             {!loadedFile ? (
                 <div

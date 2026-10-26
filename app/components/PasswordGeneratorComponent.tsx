@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { DICEWARE_WORDS } from "@/app/lib/dicewareWordlist";
 
+import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
+
 type Mode = "password" | "passphrase" | "secret";
 type SecretFormat = "hex" | "base64" | "base64url" | "uuid";
 
@@ -166,7 +168,21 @@ export default function PasswordGeneratorComponent() {
 
     if (pool <= 0) return 0;
     return Math.round(pwdLength * Math.log2(pool));
-  }, [result, mode, secretBytes, secretFormat, wordCount, includeNumber, capitalize, useUpper, useLower, useNumbers, useSymbols, avoidAmbiguous, pwdLength]);
+  }, [
+    result,
+    mode,
+    secretBytes,
+    secretFormat,
+    wordCount,
+    includeNumber,
+    capitalize,
+    useUpper,
+    useLower,
+    useNumbers,
+    useSymbols,
+    avoidAmbiguous,
+    pwdLength,
+  ]);
 
   const copyToClipboard = () => {
     if (!result) return;
@@ -189,30 +205,24 @@ export default function PasswordGeneratorComponent() {
     entropy < 45
       ? "text-error progress-error"
       : entropy < 65
-      ? "text-warning progress-warning"
-      : entropy < 85
-      ? "text-success progress-success"
-      : "text-primary progress-primary";
+        ? "text-warning progress-warning"
+        : entropy < 85
+          ? "text-success progress-success"
+          : "text-primary progress-primary";
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
       {/* Header & Fil d'Ariane */}
-      <div className="flex flex-col gap-2 border-b border-base-content/10 pb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Link href="/" className="text-xs text-base-content/60 hover:text-primary transition-colors">
-            {tCommon("home")}
-          </Link>
-          <span className="text-xs text-base-content/30">/</span>
-          <span className="text-xs text-primary font-medium">{t("title")}</span>
-        </div>
-        <h1 className="text-2xl font-bold text-base-content flex items-center gap-2.5">
-          <span className="icon-[lucide--key] size-6 text-primary"></span>
-          {t("title")}
-        </h1>
-        <p className="text-xs text-base-content/60 leading-relaxed">
-          {t("desc")}
-        </p>
-      </div>
+      <ToolHeader
+        title={t("title")}
+        description={t("desc")}
+        icon="icon-[lucide--link]"
+        // badge={
+        //   <span className="badge badge-sm badge-soft badge-primary">
+        //     100% Local
+        //   </span>
+        // }
+      />
 
       {/* Mode Switcher Tabs */}
       <div className="join w-full grid grid-cols-3 bg-base-200/50 p-1 rounded-xl">
@@ -265,7 +275,9 @@ export default function PasswordGeneratorComponent() {
               onClick={copyToClipboard}
               className={`btn btn-sm ${isCopied ? "btn-success" : "btn-primary"} gap-1.5`}
             >
-              <span className={`icon-[lucide--${isCopied ? "check" : "copy"}] size-4`}></span>
+              <span
+                className={`icon-[lucide--${isCopied ? "check" : "copy"}] size-4`}
+              ></span>
               <span>{isCopied ? t("copied") : t("copy")}</span>
             </button>
           </div>
@@ -278,14 +290,16 @@ export default function PasswordGeneratorComponent() {
               <span className="icon-[lucide--shield-check] size-4 text-primary"></span>
               {t("entropyBits", { bits: entropy })}
             </span>
-            <span className={`font-mono text-[11px] font-bold ${strengthColor.split(" ")[0]}`}>
+            <span
+              className={`font-mono text-[11px] font-bold ${strengthColor.split(" ")[0]}`}
+            >
               {entropy < 45
                 ? t("strengthWeak")
                 : entropy < 65
-                ? t("strengthFair")
-                : entropy < 85
-                ? t("strengthStrong")
-                : t("strengthCryptographic")}
+                  ? t("strengthFair")
+                  : entropy < 85
+                    ? t("strengthStrong")
+                    : t("strengthCryptographic")}
             </span>
           </div>
 
@@ -309,7 +323,9 @@ export default function PasswordGeneratorComponent() {
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-xs font-semibold">
                 <span>{t("length", { length: pwdLength })}</span>
-                <span className="font-mono text-primary font-bold">{pwdLength}</span>
+                <span className="font-mono text-primary font-bold">
+                  {pwdLength}
+                </span>
               </div>
               <input
                 type="range"
@@ -369,7 +385,9 @@ export default function PasswordGeneratorComponent() {
                   onChange={(e) => setAvoidAmbiguous(e.target.checked)}
                   className="checkbox checkbox-sm checkbox-primary"
                 />
-                <span className="label-text text-xs">{t("avoidAmbiguous")}</span>
+                <span className="label-text text-xs">
+                  {t("avoidAmbiguous")}
+                </span>
               </label>
             </div>
           </div>
@@ -381,7 +399,9 @@ export default function PasswordGeneratorComponent() {
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-xs font-semibold">
                 <span>{t("wordsCount", { count: wordCount })}</span>
-                <span className="font-mono text-primary font-bold">{wordCount} mots</span>
+                <span className="font-mono text-primary font-bold">
+                  {wordCount} mots
+                </span>
               </div>
               <input
                 type="range"
@@ -428,7 +448,9 @@ export default function PasswordGeneratorComponent() {
                     onChange={(e) => setIncludeNumber(e.target.checked)}
                     className="checkbox checkbox-sm checkbox-primary"
                   />
-                  <span className="label-text text-xs">{t("includeNumber")}</span>
+                  <span className="label-text text-xs">
+                    {t("includeNumber")}
+                  </span>
                 </label>
               </div>
             </div>
@@ -443,23 +465,28 @@ export default function PasswordGeneratorComponent() {
                 {t("secretType")}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(["hex", "base64", "base64url", "uuid"] as SecretFormat[]).map((fmt) => (
-                  <button
-                    key={fmt}
-                    type="button"
-                    onClick={() => setSecretFormat(fmt)}
-                    className={`btn btn-sm ${secretFormat === fmt ? "btn-primary" : "btn-outline"}`}
-                  >
-                    {fmt.toUpperCase()}
-                  </button>
-                ))}
+                {(["hex", "base64", "base64url", "uuid"] as SecretFormat[]).map(
+                  (fmt) => (
+                    <button
+                      key={fmt}
+                      type="button"
+                      onClick={() => setSecretFormat(fmt)}
+                      className={`btn btn-sm ${secretFormat === fmt ? "btn-primary" : "btn-outline"}`}
+                    >
+                      {fmt.toUpperCase()}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
 
             {secretFormat !== "uuid" && (
               <div className="flex flex-col gap-2 pt-2">
                 <label className="text-xs font-semibold text-base-content/70">
-                  {t("bytesCount", { bytes: secretBytes, bits: secretBytes * 8 })}
+                  {t("bytesCount", {
+                    bytes: secretBytes,
+                    bits: secretBytes * 8,
+                  })}
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {[16, 32, 64].map((bytes) => (
