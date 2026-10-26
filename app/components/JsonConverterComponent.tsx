@@ -401,7 +401,7 @@ export default function JsonConverterComponent() {
             <textarea
               readOnly
               value={outputResult}
-              className="textarea textarea-bordered font-mono text-xs w-full h-[480px] leading-relaxed resize-none bg-base-200/40 select-all focus:outline-primary"
+              className="textarea textarea-bordered font-mono text-xs w-full h-120 leading-relaxed resize-none bg-base-200/40 select-all focus:outline-primary"
               spellCheck={false}
             />
           </div>

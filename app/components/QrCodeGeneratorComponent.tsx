@@ -339,7 +339,7 @@ export default function QrCodeGeneratorComponent() {
             {/* QR Rendering */}
             <div
               ref={qrRef}
-              className="p-2 bg-white rounded-lg inline-flex items-center justify-center min-h-[200px] w-full"
+              className="p-2 bg-white rounded-lg inline-flex items-center justify-center min-h-50 w-full"
             >
               {isTooLong ? (
                 <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-error/50 rounded-xl bg-error/5 text-error text-center gap-2 w-full">

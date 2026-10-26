@@ -232,7 +232,7 @@ export default function UrlShortenerComponent() {
                 type="text"
                 readOnly
                 value={result.short_url}
-                className="bg-transparent font-mono text-xs flex-1 outline-none text-primary select-all px-2 truncate min-w-[200px]"
+                className="bg-transparent font-mono text-xs flex-1 outline-none text-primary select-all px-2 truncate min-w-50"
               />
 
               <div className="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end">

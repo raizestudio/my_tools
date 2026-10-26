@@ -263,7 +263,7 @@ export default function WebhookCatcherComponent() {
             </button>
           </div>
 
-          <div className="divide-y divide-base-content/10 max-h-[580px] overflow-y-auto">
+          <div className="divide-y divide-base-content/10 max-h-145 overflow-y-auto">
             {records.length === 0 ? (
               <div className="p-8 text-center text-xs text-base-content/50 flex flex-col items-center gap-2">
                 <span className="icon-[lucide--inbox] size-8 opacity-40 animate-pulse"></span>
@@ -312,7 +312,7 @@ export default function WebhookCatcherComponent() {
         </div>
 
         {/* Right Column: Inspector Details */}
-        <div className="lg:col-span-8 card card-border bg-base-100 shadow-sm overflow-hidden flex flex-col min-h-[460px]">
+        <div className="lg:col-span-8 card card-border bg-base-100 shadow-sm overflow-hidden flex flex-col min-h-115">
           {selectedRecord ? (
             <div className="flex flex-col">
               {/* Header Details */}
