@@ -2,7 +2,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import ToolBreadcrumb from "@/app/components/ui/TooBreadcrumbComponent";
+import ToolBreadcrumb from "@/app/components/ui/ToolBreadcrumbComponent";
 
 interface ToolHeaderProps {
   title: string;
