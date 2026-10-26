@@ -15,7 +15,32 @@ export const fr = {
         clearSearch: "Réinitialiser",
         help: "Aide",
         contribute: "Contribution",
-        buyMeACoffee: "Buy me a coffee"
+        buyMeACoffee: "Buy me a coffee",
+    },
+    privacyNotice: {
+      badge: 'Architecture Privacy-First',
+      title: 'Zero-Knowledge & Données Privées',
+      subtitle: '0w est conçu avec une exigence absolue de confidentialité et d’exécution locale.',
+      points: [
+        {
+          icon: 'icon-[lucide--cpu]',
+          title: 'Traitement 100 % Local',
+          desc: 'L’inspection de JWT, la conversion JSON et la génération de mots de passe s’exécutent dans la mémoire de votre navigateur.',
+        },
+        {
+          icon: 'icon-[lucide--flame]',
+          title: 'Rétention Éphémère',
+          desc: 'Les secrets chiffrés et webhooks de test sont soumis à une autodestruction stricte et purgés automatiquement.',
+        },
+        {
+          icon: 'icon-[lucide--shield-off]',
+          title: 'Zéro Traçage Commercial',
+          desc: 'Aucun bandeau publicitaire, aucun cookie invasif de profilage et aucune revente de données.',
+        },
+      ],
+      supportTitle: 'Projet Libre & Indépendant',
+      supportDesc: '0w est un projet bénévole, sans publicité ni monétisation de données. Si ces outils vous sont utiles, vous pouvez soutenir l’hébergement ou contribuer au code.',
+      button: 'J’ai compris & continuer',
     },
     categories: {
         security: {
@@ -55,6 +80,10 @@ export const fr = {
         webhookCatcher: {
             title: "Capteur de Webhooks",
             desc: "Testez et inspectez des requêtes HTTP et webhooks en direct via WebSockets.",
+        },
+        jwtInspector: {
+            title: "Inspecteur & Décodeur JWT",
+            desc: "Décodez, inspectez les claims et vérifiez les signatures de JWT localement dans votre navigateur.",
         },
     },
 } satisfies Dictionary;

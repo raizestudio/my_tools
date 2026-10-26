@@ -12,7 +12,32 @@ export const en = {
         clearSearch: "Reset",
         help: "Help",
         contribute: "Contribute",
-        buyMeACoffee: "Buy me a coffee"
+        buyMeACoffee: "Buy me a coffee",
+    },
+    privacyNotice: {
+      badge: 'Privacy-First Architecture',
+      title: 'Zero-Knowledge & Data Privacy',
+      subtitle: '0w is built with an uncompromising focus on privacy and client-side processing.',
+      points: [
+        {
+          icon: 'icon-[lucide--cpu]',
+          title: 'Client-Side Execution',
+          desc: 'JWT inspection, JSON conversions, and password generation happen entirely inside your browser sandbox.',
+        },
+        {
+          icon: 'icon-[lucide--flame]',
+          title: 'Ephemeral Storage',
+          desc: 'Encrypted secrets and temporary webhooks are stored using strict time-to-live policies and auto-purged on schedule.',
+        },
+        {
+          icon: 'icon-[lucide--shield-off]',
+          title: 'Zero Tracking',
+          desc: 'No advertising networks, no third-party profiling cookies, and no telemetry selling.',
+        },
+      ],
+      supportTitle: 'Independent & Open Source',
+      supportDesc: '0w is completely ad-free and community-driven. If these tools help your workflow, consider starring the repo or buying a coffee to support infrastructure costs.',
+      button: 'I Understand & Continue',
     },
     categories: {
         security: {
@@ -52,6 +77,10 @@ export const en = {
         webhookCatcher: {
             title: "Webhook Catcher",
             desc: "Inspect incoming HTTP requests and webhooks in real time via WebSockets.",
+        },
+        jwtInspector: {
+            title: "JWT Inspector & Debugger",
+            desc: "Decode, inspect claims, and verify JSON Web Token signatures locally in your browser.",
         },
     },
 };

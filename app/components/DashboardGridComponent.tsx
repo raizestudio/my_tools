@@ -85,11 +85,11 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             className={`btn btn-sm ${
               selectedCategory === "all"
                 ? "btn-primary"
-                : "btn-ghost text-base-content/70 hover:text-base-content"
+                : "btn-ghost text-primary-content/70 dark:text-base-content hover:text-primary-content"
             }`}
           >
             {t.common.allCategories}
-            <span className="badge badge-xs badge-soft ml-1">
+            <span className="badge badge-xs badge-soft ml-1 text-base-content">
               {apps.length}
             </span>
           </button>
@@ -105,14 +105,14 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
                 className={`btn btn-sm flex items-center gap-1.5 ${
                   isActive
                     ? "btn-primary"
-                    : "btn-ghost text-base-content/70 hover:text-base-content"
+                    : "btn-ghost text-primary-content/70 dark:text-base-content hover:text-primary-content"
                 }`}
               >
                 <span className={`${cat.icon} size-4`}></span>
                 <span>
                   {t.categories[cat.id]?.title || cat.id}
                 </span>
-                <span className="badge badge-xs badge-soft ml-1">
+                <span className="badge badge-xs badge-soft ml-1 text-base-content">
                   {count}
                 </span>
               </button>
@@ -121,7 +121,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         </div>
 
         {/* Live Search Input */}
-        <div className="relative min-w-[260px] md:max-w-xs">
+        <div className="relative min-w-65 md:max-w-xs">
           <span className="icon-[lucide--search] size-4 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"></span>
           <input
             type="text"
