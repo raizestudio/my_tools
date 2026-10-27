@@ -3,7 +3,7 @@
 
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import LanguageSwitcher from "@/app/components/LanguageSwitcherComponent";
 import ThemeToggleComponent from "@/app/components/ThemeToggleComponent";
 import { AVAILABLE_TOOLS, ToolCategory } from "@/app/lib/tools";
@@ -11,7 +11,10 @@ import { AVAILABLE_TOOLS, ToolCategory } from "@/app/lib/tools";
 interface CategoryNavConfig {
   id: ToolCategory;
   titleKey:
-    "security.title" | "developer.title" | "network.title" | "general.title";
+    | "security.title"
+    | "developer.title"
+    | "network.title"
+    | "general.title";
   icon: string;
 }
 
@@ -34,7 +37,6 @@ export default function NavbarComponent() {
   const tCommon = useTranslations("common");
   const tCategories = useTranslations("categories");
   const tTools = useTranslations("tools");
-  const pathname = usePathname();
 
   type ToolKey = Parameters<typeof tTools>[0];
   type CategoryKey = Parameters<typeof tCategories>[0];
@@ -69,10 +71,12 @@ export default function NavbarComponent() {
     };
   }, []);
 
-  // Close dropdown on route change
+  // Close dropdown on browser back/forward navigation without dynamic hooks
   useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+    const handlePopState = () => setIsOpen(false);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const activeCategoryConfig =
     CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
@@ -206,7 +210,8 @@ export default function NavbarComponent() {
                     {/* Scrollable Tool Items */}
                     <div className="grid grid-cols-1 gap-1 max-h-[360px] overflow-y-auto pr-1">
                       {currentCategoryTools.map((tool) => {
-                        const titleKey = `${tool.i18nKey}.title` as ToolKey;
+                        const titleKey =
+                          `${tool.i18nKey}.title` as ToolKey;
                         const descKey = `${tool.i18nKey}.desc` as ToolKey;
                         const title = tTools.has(titleKey)
                           ? tTools(titleKey)
