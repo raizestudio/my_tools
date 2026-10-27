@@ -88,6 +88,14 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "security",
         networkRequired: false,
     },
+    {
+        id: "link-auditor",
+        href: "/link-auditor",
+        icon: "icon-[lucide--shield-alert]",
+        i18nKey: "linkAuditor",
+        category: "security",
+        networkRequired: true,
+    },
 
     // --- Developer Utilities ---
     {

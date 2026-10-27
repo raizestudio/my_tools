@@ -19,6 +19,7 @@ const toolSlugs = [
     "hex-analyzer",
     "pdf-toolkit",
     "network-probe",
+    "link-auditor",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

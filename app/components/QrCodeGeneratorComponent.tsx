@@ -3,11 +3,11 @@
 
 import { useState, useRef, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { QRCodeCanvas } from "qrcode.react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
-type Mode = "wifi" | "url" | "text";
+type Mode = "wifi" | "url" | "text" | "vcard";
 type AuthType = "WPA" | "WEP" | "nopass";
 type ErrorLevel = "L" | "M" | "Q" | "H";
 
@@ -32,6 +32,13 @@ export default function QrCodeGeneratorComponent() {
   const [authType, setAuthType] = useState<AuthType>("WPA");
   const [isHidden, setIsHidden] = useState(false);
 
+  // vCard Contact State
+  const [firstName, setFirstName] = useState("Alex");
+  const [lastName, setLastName] = useState("Dev");
+  const [org, setOrg] = useState("0w Studio");
+  const [phone, setPhone] = useState("+1 555 0199");
+  const [email, setEmail] = useState("alex@example.com");
+
   // Customization State
   const [fgColor, setFgColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
@@ -39,9 +46,13 @@ export default function QrCodeGeneratorComponent() {
   const [size, setSize] = useState(256);
   const [includeMargin, setIncludeMargin] = useState(true);
 
-  const qrRef = useRef<HTMLDivElement>(null);
+  // Copy feedback state
+  const [copiedImage, setCopiedImage] = useState(false);
 
-  // Format Wi-Fi standard ZXing
+  const qrCanvasRef = useRef<HTMLDivElement>(null);
+  const qrSvgRef = useRef<HTMLDivElement>(null);
+
+  // Format Wi-Fi standard ZXing payload
   const getWifiString = () => {
     const escapeWifi = (str: string) => str.replace(/([\\;,:"])/g, "\\$1");
     const escapedSsid = escapeWifi(ssid);
@@ -54,7 +65,28 @@ export default function QrCodeGeneratorComponent() {
     return `WIFI:T:${authType};S:${escapedSsid};P:${escapedPass};${hiddenStr};`;
   };
 
-  const qrValue = mode === "wifi" ? getWifiString() : textContent;
+  // Format vCard 3.0 standard payload
+  const getVCardString = () => {
+    const cleanFn = `${firstName} ${lastName}`.trim();
+    return [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      `N:${lastName};${firstName};;;`,
+      `FN:${cleanFn || "Contact"}`,
+      org ? `ORG:${org}` : "",
+      phone ? `TEL;TYPE=CELL:${phone}` : "",
+      email ? `EMAIL:${email}` : "",
+      "END:VCARD",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  };
+
+  const qrValue = useMemo(() => {
+    if (mode === "wifi") return getWifiString();
+    if (mode === "vcard") return getVCardString();
+    return textContent;
+  }, [mode, ssid, password, authType, isHidden, firstName, lastName, org, phone, email, textContent]);
 
   const byteLength = useMemo(() => {
     return new TextEncoder().encode(qrValue).length;
@@ -63,15 +95,52 @@ export default function QrCodeGeneratorComponent() {
   const maxAllowedBytes = QR_MAX_BYTES[errorLevel];
   const isTooLong = byteLength > maxAllowedBytes;
 
+  // 1. Download Raster PNG
   const downloadPng = () => {
-    if (isTooLong || !qrRef.current) return;
-    const canvas = qrRef.current.querySelector("canvas");
+    if (isTooLong || !qrCanvasRef.current) return;
+    const canvas = qrCanvasRef.current.querySelector("canvas");
     if (!canvas) return;
 
     const link = document.createElement("a");
     link.download = `qr-${mode}-${Date.now()}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
+  };
+
+  // 2. Download Lossless Vector SVG
+  const downloadSvg = () => {
+    if (isTooLong || !qrSvgRef.current) return;
+    const svgEl = qrSvgRef.current.querySelector("svg");
+    if (!svgEl) return;
+
+    const svgData = new XMLSerializer().serializeToString(svgEl);
+    const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `qr-${mode}-${Date.now()}.svg`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // 3. Direct Copy to Clipboard
+  const handleCopyImage = async () => {
+    if (isTooLong || !qrCanvasRef.current || copiedImage) return;
+    const canvas = qrCanvasRef.current.querySelector("canvas");
+    if (!canvas) return;
+
+    try {
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        await navigator.clipboard.write([
+          new ClipboardItem({ [blob.type]: blob }),
+        ]);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 1800);
+      });
+    } catch (err: unknown) {
+      console.error("Failed to copy image to clipboard:", err);
+    }
   };
 
   const handlePrint = () => {
@@ -81,7 +150,6 @@ export default function QrCodeGeneratorComponent() {
 
   return (
     <div className="flex flex-col gap-8 max-w-5xl mx-auto w-full">
-      {/* Header & Fil d'Ariane */}
       <ToolHeader
         title={t("title")}
         description={t("desc")}
@@ -94,7 +162,7 @@ export default function QrCodeGeneratorComponent() {
       />
 
       {/* Mode Switcher Tabs */}
-      <div className="join w-full grid grid-cols-3 bg-base-200/50 p-1 rounded-xl print:hidden">
+      <div className="join w-full grid grid-cols-4 bg-base-200/50 p-1 rounded-xl print:hidden">
         <button
           type="button"
           onClick={() => setMode("wifi")}
@@ -103,7 +171,8 @@ export default function QrCodeGeneratorComponent() {
           }`}
         >
           <span className="icon-[lucide--wifi] size-4"></span>
-          <span>{t("tabWifi")}</span>
+          <span className="hidden sm:inline">{t("tabWifi")}</span>
+          <span className="sm:hidden">WiFi</span>
         </button>
         <button
           type="button"
@@ -125,14 +194,25 @@ export default function QrCodeGeneratorComponent() {
           <span className="icon-[lucide--file-text] size-4"></span>
           <span>{t("tabText")}</span>
         </button>
+        <button
+          type="button"
+          onClick={() => setMode("vcard")}
+          className={`btn btn-sm join-item ${
+            mode === "vcard" ? "btn-primary shadow-sm" : "btn-ghost text-base-content/70"
+          }`}
+        >
+          <span className="icon-[lucide--contact] size-4"></span>
+          <span className="hidden sm:inline">{t("tabVcard")}</span>
+          <span className="sm:hidden">vCard</span>
+        </button>
       </div>
 
-      {/* 2-Columns layout */}
+      {/* 2-Columns Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Controls Column */}
         <div className="lg:col-span-7 flex flex-col gap-4 print:hidden">
           {/* Mode-specific Fields */}
-          {mode === "wifi" ? (
+          {mode === "wifi" && (
             <div className="card card-border bg-base-100 p-5 shadow-sm flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-base-content/70">
@@ -191,7 +271,75 @@ export default function QrCodeGeneratorComponent() {
                 </span>
               </label>
             </div>
-          ) : (
+          )}
+
+          {mode === "vcard" && (
+            <div className="card card-border bg-base-100 p-5 shadow-sm flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-base-content/70">
+                    {t("firstName")}
+                  </label>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="input input-sm input-bordered w-full text-xs focus:outline-primary"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-base-content/70">
+                    {t("lastName")}
+                  </label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="input input-sm input-bordered w-full text-xs focus:outline-primary"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-base-content/70">
+                  {t("organization")}
+                </label>
+                <input
+                  type="text"
+                  value={org}
+                  onChange={(e) => setOrg(e.target.value)}
+                  className="input input-sm input-bordered w-full text-xs focus:outline-primary"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-base-content/70">
+                    {t("phone")}
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="input input-sm input-bordered w-full font-mono text-xs focus:outline-primary"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-base-content/70">
+                    {t("email")}
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input input-sm input-bordered w-full font-mono text-xs focus:outline-primary"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(mode === "url" || mode === "text") && (
             <div className="card card-border bg-base-100 p-5 shadow-sm flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-semibold text-base-content/70">
@@ -267,11 +415,9 @@ export default function QrCodeGeneratorComponent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-base-content/10">
               <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-base-content/70">
-                    {t("errorLevel")}
-                  </label>
-                </div>
+                <label className="text-xs font-medium text-base-content/70">
+                  {t("errorLevel")}
+                </label>
                 <select
                   value={errorLevel}
                   onChange={(e) => setErrorLevel(e.target.value as ErrorLevel)}
@@ -332,10 +478,22 @@ export default function QrCodeGeneratorComponent() {
               </div>
             )}
 
-            {/* QR Rendering */}
+            {mode === "vcard" && (
+              <div className="flex flex-col items-center gap-1">
+                <span className="icon-[lucide--contact] size-8 text-neutral-900"></span>
+                <h3 className="font-bold text-lg leading-tight tracking-tight text-neutral-900">
+                  {t("contactCardTitle")}
+                </h3>
+                <p className="text-xs text-neutral-500 font-mono">
+                  {t("contactCardHint")}
+                </p>
+              </div>
+            )}
+
+            {/* Canvas QR Container */}
             <div
-              ref={qrRef}
-              className="p-2 bg-white rounded-lg inline-flex items-center justify-center min-h-50 w-full"
+              ref={qrCanvasRef}
+              className="p-2 bg-white rounded-lg inline-flex items-center justify-center min-h-[200px] w-full"
             >
               {isTooLong ? (
                 <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-error/50 rounded-xl bg-error/5 text-error text-center gap-2 w-full">
@@ -361,6 +519,19 @@ export default function QrCodeGeneratorComponent() {
               )}
             </div>
 
+            {/* Hidden SVG Renderer for Lossless Vector Export */}
+            <div ref={qrSvgRef} className="hidden" aria-hidden="true">
+              <QRCodeSVG
+                value={qrValue || " "}
+                size={size}
+                fgColor={fgColor}
+                bgColor={bgColor}
+                level={errorLevel}
+                includeMargin={includeMargin}
+              />
+            </div>
+
+            {/* WiFi Summary Box on Printable Card */}
             {mode === "wifi" && (
               <div className="w-full bg-neutral-50 border border-neutral-200 rounded-lg p-2.5 text-xs flex flex-col gap-1 text-left">
                 <div className="flex justify-between items-center gap-2">
@@ -383,31 +554,94 @@ export default function QrCodeGeneratorComponent() {
                 )}
               </div>
             )}
+
+            {/* vCard Summary Box on Card */}
+            {mode === "vcard" && (
+              <div className="w-full bg-neutral-50 border border-neutral-200 rounded-lg p-2.5 text-xs flex flex-col gap-1 text-left">
+                <div className="font-bold text-neutral-900 text-center pb-1 border-b border-neutral-200">
+                  {`${firstName} ${lastName}`.trim() || "Contact"}
+                </div>
+                {org && (
+                  <div className="flex justify-between text-[11px] text-neutral-600">
+                    <span>{t("organization")}:</span>
+                    <span className="font-medium text-neutral-900 truncate">{org}</span>
+                  </div>
+                )}
+                {phone && (
+                  <div className="flex justify-between text-[11px] text-neutral-600">
+                    <span>{t("phone")}:</span>
+                    <span className="font-mono text-neutral-900 truncate">{phone}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2 justify-center w-full max-w-sm print:hidden">
-            <button
-              type="button"
-              onClick={downloadPng}
-              disabled={isTooLong}
-              className="btn btn-sm btn-primary flex-1 gap-1.5 disabled:opacity-50"
-            >
-              <span className="icon-[lucide--download] size-4"></span>
-              <span>{t("downloadPng")}</span>
-            </button>
-
-            {mode === "wifi" && (
+          {/* Action Buttons Toolbar */}
+          <div className="flex flex-col gap-2 w-full max-w-sm print:hidden">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={handlePrint}
+                onClick={downloadPng}
                 disabled={isTooLong}
-                className="btn btn-sm btn-outline flex-1 gap-1.5 disabled:opacity-50"
+                className="btn btn-sm btn-primary gap-1.5"
               >
-                <span className="icon-[lucide--printer] size-4"></span>
-                <span>{t("printCard")}</span>
+                <span className="icon-[lucide--download] size-4"></span>
+                <span>{t("downloadPng")}</span>
               </button>
-            )}
+
+              <button
+                type="button"
+                onClick={downloadSvg}
+                disabled={isTooLong}
+                className="btn btn-sm btn-outline gap-1.5"
+              >
+                <span className="icon-[lucide--file-code] size-4"></span>
+                <span>{t("downloadSvg")}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleCopyImage}
+                disabled={isTooLong}
+                className={`btn btn-sm gap-1.5 ${
+                  copiedImage ? "btn-success" : "btn-neutral btn-outline"
+                }`}
+              >
+                <span
+                  className={`size-4 ${
+                    copiedImage
+                      ? "icon-[lucide--check]"
+                      : "icon-[lucide--clipboard-copy]"
+                  }`}
+                ></span>
+                <span>{copiedImage ? t("imageCopied") : t("copyImage")}</span>
+              </button>
+
+              {mode === "wifi" ? (
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  disabled={isTooLong}
+                  className="btn btn-sm btn-outline gap-1.5"
+                >
+                  <span className="icon-[lucide--printer] size-4"></span>
+                  <span>{t("printCard")}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  disabled={isTooLong}
+                  className="btn btn-sm btn-ghost gap-1.5 text-base-content/60"
+                >
+                  <span className="icon-[lucide--printer] size-4"></span>
+                  <span>Print</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
