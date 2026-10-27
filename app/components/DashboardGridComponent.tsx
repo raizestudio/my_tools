@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ToolItem, ToolCategory } from "@/app/lib/tools";
 import AppCardComponent from "@/app/components/AppCardComponent";
@@ -17,6 +18,8 @@ const CATEGORY_META: { id: ToolCategory; icon: string }[] = [
   { id: "network", icon: "icon-[lucide--network]" },
 ];
 
+const VALID_CATEGORIES = new Set(["general", "security", "developer", "network"]);
+
 export default function DashboardGrid({ apps }: DashboardGridProps) {
   const tCommon = useTranslations("common");
   const tCategories = useTranslations("categories");
@@ -25,10 +28,21 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
   type ToolKey = Parameters<typeof tTools>[0];
   type CategoryKey = Parameters<typeof tCategories>[0];
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Read initial query parameter on mount directly in the client
+  const initialCategory = useMemo(() => {
+    const cat = searchParams.get("category");
+    return cat && VALID_CATEGORIES.has(cat) ? (cat as ToolCategory) : "all";
+  }, [searchParams]);
+
   const [isLive, setIsLive] = useState<boolean | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<ToolCategory | "all">("all");
+  const [selectedCategory, setSelectedCategory] = useState<ToolCategory | "all">(initialCategory);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Check backend health
   useEffect(() => {
     const checkHealth = async () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -44,6 +58,31 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
 
     checkHealth();
   }, []);
+
+  // Synchronize state when the URL changes (e.g., clicking landing page links or back/forward)
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat && VALID_CATEGORIES.has(cat)) {
+      setSelectedCategory(cat as ToolCategory);
+    } else if (!cat) {
+      setSelectedCategory("all");
+    }
+  }, [searchParams]);
+
+  // Update URL without a page reload when a user clicks a pill
+  const handleCategoryChange = (cat: ToolCategory | "all") => {
+    setSelectedCategory(cat);
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (cat === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", cat);
+    }
+
+    const query = params.toString() ? `?${params.toString()}` : "";
+    router.replace(`${pathname}${query}`, { scroll: false });
+  };
 
   const isOffline = isLive === false;
 
@@ -93,7 +132,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setSelectedCategory("all")}
+            onClick={() => handleCategoryChange("all")}
             className={`btn btn-sm ${
               selectedCategory === "all"
                 ? "btn-primary"
@@ -118,7 +157,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={`btn btn-sm flex items-center gap-1.5 ${
                   isActive
                     ? "btn-primary"
@@ -167,7 +206,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           <button
             type="button"
             onClick={() => {
-              setSelectedCategory("all");
+              handleCategoryChange("all");
               setSearchQuery("");
             }}
             className="btn btn-xs btn-outline"
