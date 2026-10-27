@@ -140,4 +140,12 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "network",
         networkRequired: false,
     },
+    {
+        id: "network-probe",
+        href: "/network-probe",
+        icon: "icon-[lucide--network]",
+        i18nKey: "networkProbe",
+        category: "network",
+        networkRequired: true,
+    },
 ];
