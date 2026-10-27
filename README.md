@@ -47,15 +47,15 @@
 
 ### Prerequisites
 
-* **Node.js:** `v20.x` or higher
+* **Node.js:** `v26.x` or higher
 * **Package Manager:** `pnpm`, `npm`, or `yarn`
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/0w.git
-   cd 0w
+   git clone https://github.com/raizestudio/my_tools.git
+   cd my_tools
    ```
 
 2. Install dependencies:
