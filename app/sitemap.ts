@@ -20,6 +20,7 @@ const toolSlugs = [
     "pdf-toolkit",
     "network-probe",
     "link-auditor",
+    "dns-auditor",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -156,4 +156,12 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "network",
         networkRequired: true,
     },
+    {
+        id: "dns-auditor",
+        href: "/dns-auditor",
+        icon: "icon-[lucide--shield-check]",
+        i18nKey: "dnsAuditor",
+        category: "network",
+        networkRequired: true,
+    },
 ];
