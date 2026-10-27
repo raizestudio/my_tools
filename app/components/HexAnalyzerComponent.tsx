@@ -479,7 +479,7 @@ export default function HexAnalyzerComponent() {
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="flex justify-between items-center py-1 border-b border-base-content/5">
                     <span className="text-base-content/60">{t("fileName")}</span>
-                    <span className="font-mono font-bold text-base-content truncate max-w-[180px]">
+                    <span className="font-mono font-bold text-base-content truncate max-w-45">
                       {fileName}
                     </span>
                   </div>
@@ -590,7 +590,7 @@ export default function HexAnalyzerComponent() {
           <div className="card card-border bg-base-100 shadow-sm flex flex-col overflow-hidden">
             <div className="p-3.5 bg-base-200/40 border-b border-base-content/10 flex flex-wrap items-center justify-between gap-3">
               {/* Search */}
-              <div className="flex items-center gap-2 flex-1 min-w-[260px] max-w-md">
+              <div className="flex items-center gap-2 flex-1 min-w-65 max-w-md">
                 <div className="relative w-full">
                   <span className="icon-[lucide--search] size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-base-content/40"></span>
                   <input
@@ -717,8 +717,8 @@ export default function HexAnalyzerComponent() {
             )}
 
             {/* Monospaced hex grid with active highlighting */}
-            <div className="overflow-x-auto p-4 bg-base-100 max-h-[560px]">
-              <div className="font-mono text-xs leading-relaxed select-text min-w-[700px]">
+            <div className="overflow-x-auto p-4 bg-base-100 max-h-140">
+              <div className="font-mono text-xs leading-relaxed select-text min-w-175">
                 <div className="grid grid-cols-12 gap-2 pb-2 mb-2 border-b border-base-content/10 font-bold text-base-content/50 text-[11px]">
                   <span className="col-span-2">Offset</span>
                   <div className="col-span-7 flex justify-between tracking-widest px-1">
@@ -819,7 +819,7 @@ export default function HexAnalyzerComponent() {
                               <span
                                 key={cIdx}
                                 onClick={() => setSelectedOffset(absOffset)}
-                                className={`inline-block px-[1px] rounded cursor-pointer transition-colors ${
+                                className={`inline-block px-px rounded cursor-pointer transition-colors ${
                                   isCharSelected
                                     ? "bg-primary text-primary-content font-bold"
                                     : "hover:bg-base-300"
