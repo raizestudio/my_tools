@@ -4,7 +4,6 @@
 import { useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { QRCodeCanvas } from "qrcode.react";
-import { Link } from "@/i18n/routing";
 
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
@@ -16,7 +15,6 @@ interface ShortenResult {
 
 export default function UrlShortenerComponent() {
   const t = useTranslations("tools.urlShortener");
-  const tCommon = useTranslations("common");
 
   const [url, setUrl] = useState("");
   const [customCode, setCustomCode] = useState("");

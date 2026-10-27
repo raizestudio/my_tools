@@ -4,7 +4,6 @@
 import { useState, useRef, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { QRCodeCanvas } from "qrcode.react";
-import { Link } from "@/i18n/routing";
 
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
@@ -21,7 +20,6 @@ const QR_MAX_BYTES: Record<ErrorLevel, number> = {
 
 export default function QrCodeGeneratorComponent() {
   const t = useTranslations("tools.qrCode");
-  const tCommon = useTranslations("common");
 
   const [mode, setMode] = useState<Mode>("wifi");
 

@@ -3,13 +3,11 @@
 
 import { useState, FormEvent } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link } from '@/i18n/routing';
 import { generateAesKey, exportKeyToBase64, encryptSecret } from '@/app/lib/crypto';
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
 export default function SecretCreateComponent() {
   const t = useTranslations('tools.secretShare');
-  const tCommon = useTranslations('common');
   const locale = useLocale();
 
   const [content, setContent] = useState('');

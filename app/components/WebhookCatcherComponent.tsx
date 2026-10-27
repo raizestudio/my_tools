@@ -3,7 +3,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
 
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
@@ -25,7 +24,6 @@ function buildCurlCommand(endpoint: string): string {
 
 export default function WebhookCatcherComponent() {
   const t = useTranslations("tools.webhookCatcher");
-  const tCommon = useTranslations("common");
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [records, setRecords] = useState<WebhookRecord[]>([]);

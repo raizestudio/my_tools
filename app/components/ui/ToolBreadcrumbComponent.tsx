@@ -20,7 +20,7 @@ export default function ToolBreadcrumb({ current }: ToolBreadcrumbProps) {
         {t("home")}
       </Link>
       <span className="text-xs text-base-content/30 select-none">/</span>
-      <span className="text-xs text-primary font-medium truncate max-w-[200px] sm:max-w-none">
+      <span className="text-xs text-primary font-medium truncate max-w-50 sm:max-w-none">
         {current}
       </span>
     </nav>

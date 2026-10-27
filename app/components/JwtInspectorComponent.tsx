@@ -3,7 +3,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Link } from "@/i18n/routing";
 
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
@@ -70,7 +69,6 @@ const SAMPLE_JWT =
 
 export default function JwtInspectorComponent() {
   const t = useTranslations("tools.jwtInspector");
-  const tCommon = useTranslations("common");
   const locale = useLocale();
 
   const [tokenInput, setTokenInput] = useState(SAMPLE_JWT);

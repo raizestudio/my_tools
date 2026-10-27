@@ -96,7 +96,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             className={`btn btn-sm ${
               selectedCategory === "all"
                 ? "btn-primary"
-                : "btn-ghost text-primary-content/70 dark:text-base-content hover:text-primary-content"
+                : "dark:bg-base-300 dark:border-transparent text-primary-content/70 dark:text-base-content hover:text-primary-content"
             }`}
           >
             {tCommon("allCategories")}
@@ -121,7 +121,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
                 className={`btn btn-sm flex items-center gap-1.5 ${
                   isActive
                     ? "btn-primary"
-                    : "btn-ghost text-primary-content/70 dark:text-base-content hover:text-primary-content"
+                    : "dark:bg-base-300 dark:border-transparent text-primary-content/70 dark:text-base-content hover:text-primary-content"
                 }`}
               >
                 <span className={`${cat.icon} size-4`}></span>
