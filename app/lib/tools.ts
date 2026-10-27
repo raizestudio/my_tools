@@ -1,7 +1,7 @@
 // app/lib/tools.ts
 import { Dictionary } from "@/app/lib/i18n/types";
 
-export type ToolCategory = "security" | "developer" | "network";
+export type ToolCategory = "general" | "security" | "developer" | "network";
 
 export interface ToolItem {
     id: string;
@@ -13,6 +13,15 @@ export interface ToolItem {
 }
 
 export const AVAILABLE_TOOLS: ToolItem[] = [
+    // General
+    {
+        id: "pdf-toolkit",
+        href: "/pdf-toolkit",
+        icon: "icon-[lucide--file-stack]",
+        i18nKey: "pdfToolkit",
+        category: "general",
+        networkRequired: false,
+    },
     // --- Security & Privacy ---
     {
         id: "passwd-generator",

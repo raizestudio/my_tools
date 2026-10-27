@@ -11,6 +11,7 @@ interface DashboardGridProps {
 }
 
 const CATEGORY_META: { id: ToolCategory; icon: string }[] = [
+  { id: "general", icon: "icon-[lucide--sparkles]" },
   { id: "security", icon: "icon-[lucide--shield-check]" },
   { id: "developer", icon: "icon-[lucide--code]" },
   { id: "network", icon: "icon-[lucide--network]" },

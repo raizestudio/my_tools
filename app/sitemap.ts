@@ -17,6 +17,7 @@ const toolSlugs = [
     "cron-builder",
     "browser-leak-inspector",
     "hex-analyzer",
+    "pdf-toolkit",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

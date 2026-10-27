@@ -51,6 +51,10 @@ export const fr = {
         button: "J’ai compris & continuer",
     },
     categories: {
+        general: {
+            title: "Général",
+            desc: "Utilitaires du quotidien, traitement de documents et outils de fichiers 100 % locaux.",
+        },
         security: {
             title: "Sécurité & Confidentialité",
             desc: "Chiffrement côté client, génération d’identifiants et partage zero-knowledge.",
@@ -532,6 +536,47 @@ export const fr = {
             bytesPerLine: "16 octets/ligne",
             asciiView: "ASCII",
             hexView: "Dump Hex",
+        },
+        pdfToolkit: {
+            title: "Boîte à Outils PDF 100 % Locale",
+            desc: "Fusionnez, découpez, pivotez et réorganisez vos documents PDF en toute confidentialité directement dans votre navigateur. Zéro transfert serveur.",
+            badgeOffline: "Confidentialité 100 % Locale",
+            tabMerge: "Fusionner des PDF",
+            tabOrganize: "Organiser, Pivoter & Découper",
+            dropzoneMerge:
+                "Déposez vos fichiers PDF ici, ou cliquez pour parcourir",
+            dropzoneSingle:
+                "Déposez un fichier PDF unique à modifier, ou cliquez pour parcourir",
+            dropzoneHint:
+                "Prend en charge tous les PDF sans limitation de taille ni de nombre de pages",
+            clear: "Tout effacer",
+            loadSample: "Charger un PDF d'exemple",
+            mergeFilesCount:
+                "{count} fichiers sélectionnés ({totalPages} pages au total)",
+            mergeButton: "Fusionner et Télécharger",
+            merging: "Fusion en cours...",
+            moveUp: "Monter",
+            moveDown: "Descendre",
+            remove: "Supprimer",
+            pagesCount: "{count} pages",
+            organizeToolbarTitle: "Opérations Groupées",
+            rotateAllCw: "Pivoter Tout de 90°",
+            rotateAllCcw: "Pivoter Tout de -90°",
+            resetPages: "Réinitialiser",
+            pageNumber: "Page {num}",
+            rotateCw: "Pivoter +90°",
+            rotateCcw: "Pivoter -90°",
+            deletePage: "Supprimer la page",
+            restorePage: "Restaurer la page",
+            downloadModified: "Télécharger le PDF ({count} pages)",
+            splitSectionTitle: "Extraire une Plage de Pages",
+            splitRangePlaceholder: "ex. : 1-3, 5, 8-10",
+            splitButton: "Extraire la Plage",
+            splitExtracting: "Extraction en cours...",
+            invalidRange: "Format de plage de pages invalide.",
+            noPagesSelected: "Aucune page restante à exporter.",
+            portrait: "Portrait",
+            landscape: "Paysage",
         },
     },
 } satisfies Dictionary;
