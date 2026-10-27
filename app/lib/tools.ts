@@ -62,6 +62,14 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "security",
         networkRequired: false,
     },
+    {
+        id: "hex-analyzer",
+        i18nKey: "hexAnalyzer",
+        href: "/hex-analyzer",
+        icon: "icon-[lucide--binary]",
+        category: "security",
+        networkRequired: false,
+    },
 
     // --- Developer Utilities ---
     {
