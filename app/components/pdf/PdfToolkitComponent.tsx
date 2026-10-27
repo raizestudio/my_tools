@@ -1,6 +1,7 @@
+// app/components/pdf/PdfToolkitComponent.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PDFDocument, degrees } from "pdf-lib";
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
@@ -27,14 +28,6 @@ export default function PdfToolkitComponent() {
   const [singlePdfBuffer, setSinglePdfBuffer] = useState<ArrayBuffer | null>(null);
   const [pages, setPages] = useState<PageItem[]>([]);
   const [rangeError, setRangeError] = useState<string | null>(null);
-
-  // Revoke URLs on unmount
-  useEffect(() => {
-    return () => {
-      pages.forEach((p) => URL.revokeObjectURL(p.previewUrl));
-      mergeFiles.forEach((m) => URL.revokeObjectURL(m.previewUrl));
-    };
-  }, [pages, mergeFiles]);
 
   const triggerDownload = (bytes: Uint8Array, filename: string) => {
     const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
@@ -130,6 +123,7 @@ export default function PdfToolkitComponent() {
     setIsProcessing(true);
     setRangeError(null);
 
+    // Clean up previous page previews before generating new ones
     pages.forEach((p) => URL.revokeObjectURL(p.previewUrl));
 
     try {
@@ -379,7 +373,6 @@ export default function PdfToolkitComponent() {
         }
       />
 
-      {/* Mode Switcher */}
       <div className="join w-full max-w-lg mx-auto grid grid-cols-2 bg-base-200/50 p-0.5 rounded-xl border border-base-content/5">
         <button
           type="button"
@@ -403,7 +396,6 @@ export default function PdfToolkitComponent() {
         </button>
       </div>
 
-      {/* Main Sections */}
       {activeTab === "merge" ? (
         <PdfMergeSection
           files={mergeFiles}
@@ -432,7 +424,6 @@ export default function PdfToolkitComponent() {
         />
       )}
 
-      {/* Top-Level Fullscreen Modal */}
       <PdfPreviewModal
         url={previewModalUrl}
         title={previewModalTitle}

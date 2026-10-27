@@ -1,3 +1,4 @@
+// app/components/pdf/PdfPreviewModalComponent.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -71,7 +72,7 @@ export default function PdfPreviewModal({
 
         <div className="grow w-full bg-base-300/40 relative">
           <iframe
-            src={`${url}#toolbar=1&navpanes=0&view=Fit`}
+            src={`${url}#page=1&toolbar=1&navpanes=0&view=Fit`}
             title="PDF Document Preview"
             className="w-full h-full border-0"
           />

@@ -1,3 +1,4 @@
+// app/components/pdf/PdfPageCardComponent.tsx
 "use client";
 
 import { useTranslations } from "next-intl";
@@ -47,14 +48,13 @@ export default function PdfPageCard({
           className="w-full h-full transition-transform duration-200 flex items-center justify-center overflow-hidden"
         >
           <iframe
-            src={`${page.previewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
+            key={`page-preview-${page.originalIndex}-${page.previewUrl}`}
+            src={`${page.previewUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
             title={`Page ${index + 1}`}
-            className="w-full h-full border-0 select-none bg-white"
-            loading="lazy"
+            className="w-full h-full border-0 select-none bg-white pointer-events-none"
           />
         </div>
 
-        {/* Transparent Shield & Hover Trigger */}
         {!page.isDeleted && (
           <button
             type="button"
@@ -80,7 +80,6 @@ export default function PdfPageCard({
         )}
       </div>
 
-      {/* Card Action Toolbar */}
       <div className="flex items-center justify-between border-t border-base-content/10 pt-2">
         <div className="flex items-center gap-1">
           <button
