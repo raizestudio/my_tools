@@ -5,6 +5,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+interface FaqAccordionProps {
+  locale?: string;
+}
+
 interface FaqItemConfig {
   id: string;
   qKey: "faqQ1" | "faqQ2" | "faqQ3" | "faqQ4";
@@ -44,9 +48,8 @@ const FAQ_ITEMS: FaqItemConfig[] = [
   },
 ];
 
-export default function FaqAccordionComponent() {
+export default function FaqAccordionComponent({ locale }: FaqAccordionProps) {
   const t = useTranslations("landing");
-  // Default to first item expanded
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleAccordion = (idx: number) => {
@@ -64,8 +67,7 @@ export default function FaqAccordionComponent() {
           {t("faqTitle")}
         </h2>
         <p className="text-xs sm:text-sm text-base-content/60 max-w-md">
-          Learn how 0w handles client-side execution, data retention, and
-          zero-telemetry workflows.
+          Learn how 0w handles client-side execution, data retention, and zero-telemetry workflows.
         </p>
       </div>
 
@@ -83,7 +85,6 @@ export default function FaqAccordionComponent() {
                   : "hover:border-base-content/20 hover:bg-base-200/20"
               }`}
             >
-              {/* FlyonUI Accordion Toggle Button */}
               <button
                 type="button"
                 onClick={() => toggleAccordion(idx)}
@@ -123,7 +124,6 @@ export default function FaqAccordionComponent() {
                 </div>
               </button>
 
-              {/* FlyonUI Accordion Content Container */}
               <div
                 className={`accordion-content overflow-hidden transition-all duration-300 ${
                   isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -139,7 +139,7 @@ export default function FaqAccordionComponent() {
         })}
       </div>
 
-      {/* FlyonUI Community Help Card */}
+      {/* Community Help Card */}
       <div className="card card-border bg-base-200/30 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border-dashed">
         <div className="flex items-center gap-3 text-center sm:text-left">
           <div className="size-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
@@ -156,7 +156,7 @@ export default function FaqAccordionComponent() {
         </div>
 
         <Link
-          href="https://github.com/raizestudio/my_tools/issues"
+          href="https://github.com"
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-xs sm:btn-sm btn-outline gap-1.5 shrink-0"
