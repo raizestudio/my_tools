@@ -10,7 +10,7 @@ export default function FooterComponent() {
   const t = useTranslations("common");
 
   return (
-    <footer className="footer bg-base-200 -bottom-px sticky inset-s-0 w-full px-6 py-4 z-10">
+    <footer className="footer bg-base-200 -bottom-px inset-s-0 w-full px-6 py-4 z-10">
       <aside className="grid-flow-col items-center">
         <p>
           &copy;{currentYear}{" "}

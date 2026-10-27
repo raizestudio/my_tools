@@ -1,10 +1,19 @@
 // app/components/api-runner/helpers.ts
-import { BodyType, CodeFormat, FormDataItem, HttpMethod, KeyValueItem } from "./types";
+import {
+  BodyType,
+  CodeFormat,
+  FormDataItem,
+  HttpMethod,
+  KeyValueItem,
+} from "./types";
 
 /**
  * Extracts query parameters from a URL into KeyValueItem rows.
  */
-export function extractQueryParams(urlStr: string): { baseUrl: string; params: KeyValueItem[] } {
+export function extractQueryParams(urlStr: string): {
+  baseUrl: string;
+  params: KeyValueItem[];
+} {
   try {
     const url = new URL(urlStr);
     const params: KeyValueItem[] = [];
@@ -40,7 +49,10 @@ export function extractQueryParams(urlStr: string): { baseUrl: string; params: K
 /**
  * Reconstructs a full URL by appending active query parameters.
  */
-export function buildUrlWithParams(baseUrl: string, params: KeyValueItem[]): string {
+export function buildUrlWithParams(
+  baseUrl: string,
+  params: KeyValueItem[],
+): string {
   const activeParams = params.filter((p) => p.enabled && p.key.trim());
   const cleanBase = baseUrl.split("?")[0];
   if (activeParams.length === 0) return cleanBase;
@@ -61,10 +73,11 @@ export function generateCodeSnippet(
   bodyType: BodyType,
   rawBody: string,
   formDataList: FormDataItem[],
-  urlencodedList: KeyValueItem[]
+  urlencodedList: KeyValueItem[],
 ): string {
   const activeHeaders = headers.filter((h) => h.enabled && h.key.trim());
-  const hasBody = ["POST", "PUT", "PATCH", "DELETE"].includes(method) && bodyType !== "none";
+  const hasBody =
+    ["POST", "PUT", "PATCH", "DELETE"].includes(method) && bodyType !== "none";
 
   // --- 1. cURL ---
   if (format === "curl") {
@@ -77,7 +90,9 @@ export function generateCodeSnippet(
       if ((bodyType === "json" || bodyType === "raw") && rawBody.trim()) {
         cmd += ` \\\n  --data '${rawBody.replace(/'/g, "'\\''")}'`;
       } else if (bodyType === "urlencoded") {
-        const active = urlencodedList.filter((item) => item.enabled && item.key.trim());
+        const active = urlencodedList.filter(
+          (item) => item.enabled && item.key.trim(),
+        );
         if (active.length > 0) {
           const sp = new URLSearchParams();
           active.forEach((item) => sp.append(item.key.trim(), item.value));
@@ -127,7 +142,9 @@ export function generateCodeSnippet(
         lines.push("data = {");
         urlencodedList
           .filter((item) => item.enabled && item.key.trim())
-          .forEach((item) => lines.push(`    "${item.key.trim()}": "${item.value}",`));
+          .forEach((item) =>
+            lines.push(`    "${item.key.trim()}": "${item.value}",`),
+          );
         lines.push("}");
         callArgs += `, data=data`;
       } else if (bodyType === "form-data") {
@@ -136,9 +153,13 @@ export function generateCodeSnippet(
           .filter((item) => item.enabled && item.key.trim())
           .forEach((item) => {
             if (item.type === "file" && item.file) {
-              lines.push(`    ("${item.key.trim()}", ("${item.file.name}", open("${item.file.name}", "rb"))),`);
+              lines.push(
+                `    ("${item.key.trim()}", ("${item.file.name}", open("${item.file.name}", "rb"))),`,
+              );
             } else {
-              lines.push(`    ("${item.key.trim()}", (None, "${item.value}")),`);
+              lines.push(
+                `    ("${item.key.trim()}", (None, "${item.value}")),`,
+              );
             }
           });
         lines.push("]");
@@ -181,7 +202,9 @@ export function generateCodeSnippet(
         lines.push("data = {");
         urlencodedList
           .filter((item) => item.enabled && item.key.trim())
-          .forEach((item) => lines.push(`    "${item.key.trim()}": "${item.value}",`));
+          .forEach((item) =>
+            lines.push(`    "${item.key.trim()}": "${item.value}",`),
+          );
         lines.push("}");
         callArgs += `, data=data`;
       } else if (bodyType === "form-data") {
@@ -190,7 +213,9 @@ export function generateCodeSnippet(
           .filter((item) => item.enabled && item.key.trim())
           .forEach((item) => {
             if (item.type === "file" && item.file) {
-              lines.push(`    "${item.key.trim()}": open("${item.file.name}", "rb"),`);
+              lines.push(
+                `    "${item.key.trim()}": open("${item.file.name}", "rb"),`,
+              );
             } else {
               lines.push(`    "${item.key.trim()}": (None, "${item.value}"),`);
             }
@@ -218,9 +243,13 @@ export function generateCodeSnippet(
         .filter((item) => item.enabled && item.key.trim())
         .forEach((item) => {
           if (item.type === "file" && item.file) {
-            lines.push(`// formData.append("${item.key.trim()}", fileInput.files[0]);`);
+            lines.push(
+              `// formData.append("${item.key.trim()}", fileInput.files[0]);`,
+            );
           } else {
-            lines.push(`formData.append("${item.key.trim()}", "${item.value}");`);
+            lines.push(
+              `formData.append("${item.key.trim()}", "${item.value}");`,
+            );
           }
         });
       lines.push("");
@@ -244,10 +273,14 @@ export function generateCodeSnippet(
       } else if (bodyType === "raw" && rawBody.trim()) {
         lines.push(`  body: ${JSON.stringify(rawBody)},`);
       } else if (bodyType === "urlencoded") {
-        const active = urlencodedList.filter((item) => item.enabled && item.key.trim());
+        const active = urlencodedList.filter(
+          (item) => item.enabled && item.key.trim(),
+        );
         const sp = new URLSearchParams();
         active.forEach((item) => sp.append(item.key.trim(), item.value));
-        lines.push(`  body: new URLSearchParams(${JSON.stringify(Object.fromEntries(sp))}),`);
+        lines.push(
+          `  body: new URLSearchParams(${JSON.stringify(Object.fromEntries(sp))}),`,
+        );
       } else if (bodyType === "form-data") {
         lines.push("  body: formData,");
       }
@@ -281,12 +314,18 @@ export function generateCodeSnippet(
       } else if (bodyType === "raw" && rawBody.trim()) {
         lines.push(`  data: ${JSON.stringify(rawBody)},`);
       } else if (bodyType === "urlencoded") {
-        const active = urlencodedList.filter((item) => item.enabled && item.key.trim());
+        const active = urlencodedList.filter(
+          (item) => item.enabled && item.key.trim(),
+        );
         const sp = new URLSearchParams();
         active.forEach((item) => sp.append(item.key.trim(), item.value));
-        lines.push(`  data: new URLSearchParams(${JSON.stringify(Object.fromEntries(sp))}),`);
+        lines.push(
+          `  data: new URLSearchParams(${JSON.stringify(Object.fromEntries(sp))}),`,
+        );
       } else if (bodyType === "form-data") {
-        lines.push(`  // data: formData (install 'form-data' or use native FormData)`);
+        lines.push(
+          `  // data: formData (install 'form-data' or use native FormData)`,
+        );
       }
     }
 
@@ -327,7 +366,9 @@ export function parseCurlCommand(raw: string) {
   let bodyType: BodyType = "none";
   const formDataList: FormDataItem[] = [];
 
-  const urlMatch = clean.match(/(?:--url\s+|curl\s+)?['"]?(https?:\/\/[^\s'"]+)['"]?/i);
+  const urlMatch = clean.match(
+    /(?:--url\s+|curl\s+)?['"]?(https?:\/\/[^\s'"]+)['"]?/i,
+  );
   if (urlMatch) url = urlMatch[1];
 
   const methodMatch = clean.match(/(?:-X|--request)\s+([A-Z]+)/i);
@@ -364,7 +405,9 @@ export function parseCurlCommand(raw: string) {
     }
   }
 
-  const bodyMatch = clean.match(/(?:-d|--data|--data-raw)\s+['"](.*?)['"](?:\s+-[a-zA-Z]|\s*$)/s);
+  const bodyMatch = clean.match(
+    /(?:-d|--data|--data-raw)\s+['"]([\s\S]*?)['"](?:\s+-[a-zA-Z]|\s*$)/,
+  );
   if (bodyMatch && bodyType !== "form-data") {
     rawBody = bodyMatch[1];
     bodyType = rawBody.trim().startsWith("{") ? "json" : "raw";
