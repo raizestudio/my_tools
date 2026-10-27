@@ -22,6 +22,15 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "general",
         networkRequired: false,
     },
+    {
+        id: "favicon-generator",
+        href: "/favicon-generator",
+        icon: "icon-[lucide--sparkles]",
+        i18nKey: "faviconGenerator",
+        category: "general",
+        networkRequired: false,
+    },
+
     // --- Security & Privacy ---
     {
         id: "passwd-generator",

@@ -44,6 +44,8 @@ export default function CopyButton({
 
   const btnVariant = copied ? "btn-success" : `btn-${variant}`;
   const btnSize = `btn-${size}`;
+  const iconClass = copied ? "icon-[lucide--check]" : "icon-[lucide--copy]";
+  const iconSize = size === "xs" ? "size-3" : size === "md" ? "size-4" : "size-3.5";
 
   return (
     <button
@@ -51,13 +53,11 @@ export default function CopyButton({
       onClick={handleCopy}
       disabled={!text}
       title={title || displayLabel}
-      className={`btn ${btnSize} ${btnVariant} gap-1.5 transition-all ${className}`}
+      className={`btn ${btnSize} ${btnVariant} ${
+        iconOnly ? "btn-square" : "gap-1.5"
+      } transition-all ${className}`}
     >
-      <span
-        className={`icon-[lucide--${copied ? "check" : "copy"}] ${
-          size === "xs" ? "size-3" : "size-3.5"
-        }`}
-      ></span>
+      <span className={`${iconClass} ${iconSize} shrink-0`}></span>
       {!iconOnly && <span>{copied ? displayCopiedLabel : displayLabel}</span>}
     </button>
   );
