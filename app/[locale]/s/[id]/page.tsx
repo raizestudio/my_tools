@@ -94,10 +94,10 @@ function SecretRevealContent() {
                             <div className="bg-warning/10 border border-warning/20 text-warning-content p-4 rounded-xl text-xs flex items-start gap-3">
                                 <span className="icon-[lucide--alert-triangle] text-warning size-5 shrink-0 mt-0.5"></span>
                                 <span>
-                                    L'affichage de ce secret consommera un droit
-                                    de lecture. Si le message est configuré pour
-                                    une lecture unique, il sera immédiatement
-                                    détruit du serveur.
+                                    L{"'"}affichage de ce secret consommera un
+                                    droit de lecture. Si le message est
+                                    configuré pour une lecture unique, il sera
+                                    immédiatement détruit du serveur.
                                 </span>
                             </div>
 
