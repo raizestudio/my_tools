@@ -721,5 +721,57 @@ export const fr = {
             ssrfNotice:
                 "Résolution directe via serveurs racine publics. Les TLDs privés et internes sont bloqués.",
         },
+        apiRunner: {
+            title: "Client API Stateless & Playground cURL",
+            desc: "Testez des requêtes REST, analysez la latence en cascade et importez/exportez vos cURL sans qu'aucun jeton ne soit conservé en base.",
+            badgeServer: "Relais Zéro-Log",
+            methodLabel: "Méthode",
+            urlLabel: "URL de la Requête",
+            urlPlaceholder: "https://api.example.com/v1/resource",
+            sendBtn: "Envoyer",
+            sending: "Envoi en cours...",
+            curlImportBtn: "Importer cURL",
+            curlExportBtn: "Copier en cURL",
+            curlCopied: "Copié !",
+            tabHeaders: "En-têtes (Headers)",
+            tabBody: "Corps (Body)",
+            tabRespBody: "Corps de Réponse",
+            tabRespHeaders: "En-têtes de Réponse",
+            tabTiming: "Cascade de Latence",
+            addHeader: "Ajouter En-tête",
+            headerKeyPlaceholder: "En-tête (ex. : Authorization)",
+            headerValPlaceholder: "Valeur (ex. : Bearer eyJ...)",
+            bodyFormatJson: "Formater JSON",
+            clearBody: "Effacer",
+            status: "Statut",
+            size: "Taille",
+            duration: "Temps Total",
+            dnsPhase: "Résolution DNS",
+            ttfbPhase: "Temps au 1er Octet (TTFB)",
+            downloadPhase: "Transfert de Données",
+            emptyResponse: "Aucun corps de réponse reçu.",
+            truncatedNotice:
+                "La réponse dépassait 1,5 Mo et a été tronquée pour préserver la mémoire.",
+            curlModalTitle: "Coller une commande cURL",
+            curlModalHint:
+                "Collez un cURL brut issu des DevTools Chrome, de Postman ou d'un terminal.",
+            parseCurlBtn: "Analyser & Remplir",
+            ssrfNotice:
+                "Toutes les requêtes s'exécutent de façon éphémère en RAM. Les réseaux locaux et les métadonnées cloud sont bloqués.",
+            execEngine: "Moteur d'Exécution",
+            modeDirect: "Navigateur Direct (Dév Local)",
+            modeRelay: "Relais Serveur (APIs Publiques)",
+            modeDirectBadge: "100 % Côté Client",
+            modeRelayBadge: "Relais Serveur",
+            directHint:
+                "Les requêtes partent directement de votre navigateur. Idéal pour localhost, Docker et microservices locaux. Le serveur cible doit autoriser CORS.",
+            relayHint:
+                "Relayé via le serveur 0w pour contourner CORS et mesurer le DNS. Les réseaux locaux sont bloqués par sécurité.",
+            corsErrorTitle:
+                "Échec de la requête directe (Erreur CORS ou Réseau)",
+            corsErrorHint:
+                "Les navigateurs bloquent les requêtes directes sauf si le serveur local renvoie 'Access-Control-Allow-Origin: *'. Pour une API publique, basculez sur le Relais Serveur.",
+            dnsBrowserNa: "N/D (Sandbox Navigateur)",
+        },
     },
 } satisfies Dictionary;

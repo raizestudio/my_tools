@@ -130,6 +130,14 @@ export const AVAILABLE_TOOLS: ToolItem[] = [
         category: "developer",
         networkRequired: false,
     },
+    {
+        id: "api-runner",
+        href: "/api-runner",
+        icon: "icon-[lucide--terminal]",
+        i18nKey: "apiRunner",
+        category: "developer",
+        networkRequired: false,
+    },
 
     // --- Web & Network ---
     {

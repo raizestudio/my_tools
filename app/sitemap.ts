@@ -21,6 +21,7 @@ const toolSlugs = [
     "network-probe",
     "link-auditor",
     "dns-auditor",
+    "api-runner",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
