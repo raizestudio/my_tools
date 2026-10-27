@@ -74,7 +74,8 @@ export default function NavbarComponent() {
     setIsOpen(false);
   }, [pathname]);
 
-  const activeCategoryConfig = CATEGORIES.find((c) => c.id === activeCategory)!;
+  const activeCategoryConfig =
+    CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
   const currentCategoryTools = AVAILABLE_TOOLS.filter(
     (t) => t.category === activeCategory,
   );
@@ -88,7 +89,9 @@ export default function NavbarComponent() {
             href="/"
             className="flex items-center gap-2 bg-primary rounded-lg px-1 py-0.5 no-underline tracking-tight"
           >
-            <span className="text-xl font-black text-primary-content">{process.env.NEXT_PUBLIC_APP_TITLE || "0w"}</span>
+            <span className="text-xl font-black text-primary-content">
+              {process.env.NEXT_PUBLIC_APP_TITLE || "0w"}
+            </span>
           </Link>
         </div>
 
@@ -108,12 +111,6 @@ export default function NavbarComponent() {
               aria-expanded={isOpen}
             >
               <span className="icon-[lucide--layout-grid] size-6"></span>
-              {/*<span className="font-semibold">Apps</span>*/}
-              {/*<span
-                className={`icon-[lucide--chevron-down] size-3.5 transition-transform duration-200 ${
-                  isOpen ? "-rotate-180" : ""
-                }`}
-              ></span>*/}
             </button>
 
             {/* Apps Menu Container */}
@@ -346,8 +343,7 @@ export default function NavbarComponent() {
             className="btn btn-sm p-0 bg-transparent border-none disabled:cursor-not-allowed"
             disabled
           >
-            <span className="icon-[lucide-extended--user-filled] size-6 text-base-content"></span>
-            {/*{tCommon("login")}*/}
+            <span className="icon-[lucide--user] size-6 text-base-content"></span>
           </button>
 
           {/* Theme Toggle */}
