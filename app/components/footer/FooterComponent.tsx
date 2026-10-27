@@ -3,8 +3,10 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import {version} from '@/package.json';
 
 const currentYear = new Date().getFullYear();
+
 
 export default function FooterComponent() {
   const tCommon = useTranslations("common");
@@ -218,6 +220,8 @@ export default function FooterComponent() {
             </Link>
             <span>—</span>
             <span>Licensed under MIT</span>
+            <span>-</span>
+            <span>{ version }</span>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
