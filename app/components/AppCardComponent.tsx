@@ -14,13 +14,13 @@ export default function AppCardComponent({ app, disabled = false }: AppCardProps
   const tCommon = useTranslations("common");
   const tTools = useTranslations("tools");
 
-  const title = tTools.has(`${app.i18nKey}.title` as any)
-    ? tTools(`${app.i18nKey}.title` as any)
-    : app.id;
+  type ToolKey = Parameters<typeof tTools>[0];
 
-  const desc = tTools.has(`${app.i18nKey}.desc` as any)
-    ? tTools(`${app.i18nKey}.desc` as any)
-    : "";
+  const titleKey = `${app.i18nKey}.title` as ToolKey;
+  const descKey = `${app.i18nKey}.desc` as ToolKey;
+
+  const title = tTools.has(titleKey) ? tTools(titleKey) : app.id;
+  const desc = tTools.has(descKey) ? tTools(descKey) : "";
 
   const cardContent = (
     <div

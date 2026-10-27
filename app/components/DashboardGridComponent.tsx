@@ -21,6 +21,10 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
   const tCategories = useTranslations("categories");
   const tTools = useTranslations("tools");
 
+  // Types stricts extraits des instances de traduction
+  type ToolKey = Parameters<typeof tTools>[0];
+  type CategoryKey = Parameters<typeof tCategories>[0];
+
   const [isLive, setIsLive] = useState<boolean | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,11 +57,14 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
       if (!matchesCategory) return false;
       if (!q) return true;
 
-      const title = tTools.has(`${app.i18nKey}.title` as any)
-        ? tTools(`${app.i18nKey}.title` as any).toLowerCase()
+      const titleKey = `${app.i18nKey}.title` as ToolKey;
+      const descKey = `${app.i18nKey}.desc` as ToolKey;
+
+      const title = tTools.has(titleKey)
+        ? tTools(titleKey).toLowerCase()
         : app.id.toLowerCase();
-      const desc = tTools.has(`${app.i18nKey}.desc` as any)
-        ? tTools(`${app.i18nKey}.desc` as any).toLowerCase()
+      const desc = tTools.has(descKey)
+        ? tTools(descKey).toLowerCase()
         : "";
 
       return title.includes(q) || desc.includes(q);
@@ -103,8 +110,9 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           {CATEGORY_META.map((cat) => {
             const count = apps.filter((a) => a.category === cat.id).length;
             const isActive = selectedCategory === cat.id;
-            const title = tCategories.has(`${cat.id}.title` as any)
-              ? tCategories(`${cat.id}.title` as any)
+            const titleKey = `${cat.id}.title` as CategoryKey;
+            const title = tCategories.has(titleKey)
+              ? tCategories(titleKey)
               : cat.id;
 
             return (
@@ -177,11 +185,14 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
             const categoryApps = apps.filter((app) => app.category === cat.id);
             if (categoryApps.length === 0) return null;
 
-            const catTitle = tCategories.has(`${cat.id}.title` as any)
-              ? tCategories(`${cat.id}.title` as any)
+            const catTitleKey = `${cat.id}.title` as CategoryKey;
+            const catDescKey = `${cat.id}.desc` as CategoryKey;
+
+            const catTitle = tCategories.has(catTitleKey)
+              ? tCategories(catTitleKey)
               : cat.id;
-            const catDesc = tCategories.has(`${cat.id}.desc` as any)
-              ? tCategories(`${cat.id}.desc` as any)
+            const catDesc = tCategories.has(catDescKey)
+              ? tCategories(catDescKey)
               : "";
 
             return (

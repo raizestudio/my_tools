@@ -4,9 +4,36 @@
 import { useState, useRef, ChangeEvent, DragEvent } from "react";
 import { useTranslations } from "next-intl";
 import exifr from "exifr";
-import { Link } from "@/i18n/routing";
-
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
+
+interface RawExifData {
+    Make?: string;
+    Model?: string;
+    DateTimeOriginal?: string | Date;
+    CreateDate?: string | Date;
+    latitude?: number;
+    longitude?: number;
+    GPSAltitude?: number;
+    Software?: string;
+    LensModel?: string;
+    ISO?: number;
+    FNumber?: number;
+    ExposureTime?: number;
+    [key: string]: unknown;
+}
+
+interface ExifrModule {
+    parse?: (
+        data: ArrayBuffer | Uint8Array,
+        options?: boolean | Record<string, unknown>
+    ) => Promise<RawExifData | undefined>;
+    default?: {
+        parse?: (
+            data: ArrayBuffer | Uint8Array,
+            options?: boolean | Record<string, unknown>
+        ) => Promise<RawExifData | undefined>;
+    };
+}
 
 interface ExifDetails {
     make?: string;
@@ -39,15 +66,12 @@ interface CleanedResult {
 
 export default function ExifCleanerComponent() {
     const t = useTranslations("tools.exifCleaner");
-    const tCommon = useTranslations("common");
     const [isDragging, setIsDragging] = useState(false);
     const [isInspecting, setIsInspecting] = useState(false);
     const [isCleaning, setIsCleaning] = useState(false);
 
     const [loadedFile, setLoadedFile] = useState<LoadedFile | null>(null);
-    const [cleanedResult, setCleanedResult] = useState<CleanedResult | null>(
-        null,
-    );
+    const [cleanedResult, setCleanedResult] = useState<CleanedResult | null>(null);
     const [showRawTags, setShowRawTags] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,12 +93,14 @@ export default function ExifCleanerComponent() {
         try {
             const buffer = await file.arrayBuffer();
 
-            // exifr.parse(buffer, true) active l'ENSEMBLE des segments (TIFF, EXIF, GPS, IPTC, XMP)
-            const parser =
-                (exifr as any)?.parse ||
-                (exifr as any)?.default?.parse ||
-                exifr;
-            const rawData = await parser(buffer, true);
+            const exifrLib = exifr as unknown as ExifrModule;
+            const parseFn = exifrLib.parse ?? exifrLib.default?.parse;
+
+            if (!parseFn) {
+                throw new Error("EXIF parser function unavailable");
+            }
+
+            const rawData = await parseFn(buffer, true);
 
             let parsedExif: ExifDetails | null = null;
 
@@ -86,7 +112,6 @@ export default function ExifCleanerComponent() {
                 const rawEntries: [string, string][] = [];
 
                 for (const [key, val] of Object.entries(rawData)) {
-                    // Filtre les buffers binaires internes (miniatures, etc.)
                     if (
                         val !== null &&
                         val !== undefined &&
@@ -101,8 +126,8 @@ export default function ExifCleanerComponent() {
                 }
 
                 parsedExif = {
-                    make: rawData.Make,
-                    model: rawData.Model,
+                    make: typeof rawData.Make === "string" ? rawData.Make : undefined,
+                    model: typeof rawData.Model === "string" ? rawData.Model : undefined,
                     dateTime: rawData.DateTimeOriginal
                         ? new Date(rawData.DateTimeOriginal).toLocaleString()
                         : rawData.CreateDate
@@ -120,11 +145,11 @@ export default function ExifCleanerComponent() {
                         typeof rawData.GPSAltitude === "number"
                             ? rawData.GPSAltitude
                             : undefined,
-                    software: rawData.Software,
-                    lensModel: rawData.LensModel,
-                    iso: rawData.ISO,
-                    fNumber: rawData.FNumber,
-                    exposureTime: rawData.ExposureTime,
+                    software: typeof rawData.Software === "string" ? rawData.Software : undefined,
+                    lensModel: typeof rawData.LensModel === "string" ? rawData.LensModel : undefined,
+                    iso: typeof rawData.ISO === "number" ? rawData.ISO : undefined,
+                    fNumber: typeof rawData.FNumber === "number" ? rawData.FNumber : undefined,
+                    exposureTime: typeof rawData.ExposureTime === "number" ? rawData.ExposureTime : undefined,
                     totalTagsCount: rawEntries.length,
                     allRawTags: rawEntries,
                 };
@@ -135,7 +160,7 @@ export default function ExifCleanerComponent() {
                 previewUrl: URL.createObjectURL(file),
                 exif: parsedExif,
             });
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Audit error:", err);
             setLoadedFile({
                 file,
@@ -203,9 +228,9 @@ export default function ExifCleanerComponent() {
                     setIsCleaning(false);
                 },
                 outputType,
-                quality,
+                quality
             );
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Cleaning error:", err);
             setIsCleaning(false);
         }
@@ -238,13 +263,12 @@ export default function ExifCleanerComponent() {
 
     return (
         <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
-            {/* Header & Fil d'Ariane */}
             <ToolHeader
-              title={t("title")}
-              description={t("desc")}
-              icon="icon-[lucide--image-minus]"
+                title={t("title")}
+                description={t("desc")}
+                icon="icon-[lucide--image-minus]"
             />
-            {/* Zone 1 : Dépôt de fichier */}
+
             {!loadedFile ? (
                 <div
                     onDragOver={(e) => {
@@ -290,9 +314,7 @@ export default function ExifCleanerComponent() {
                     </span>
                 </div>
             ) : (
-                /* Zone 2 : Résultat de l'Audit de l'image originale */
                 <div className="flex flex-col gap-6 animate-in fade-in duration-200">
-                    {/* Alerte GPS */}
                     {hasGps && (
                         <div className="alert alert-soft alert-warning flex items-start justify-between gap-4">
                             <div className="flex items-start gap-3">
@@ -325,9 +347,7 @@ export default function ExifCleanerComponent() {
                         </div>
                     )}
 
-                    {/* Grille : Aperçu + Rapport EXIF */}
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                        {/* Colonne gauche : Image originale */}
                         <div className="md:col-span-5 flex flex-col gap-3">
                             <div className="card card-border bg-base-100 p-4 flex flex-col items-center justify-center gap-3">
                                 <div className="w-full aspect-square rounded-xl overflow-hidden bg-base-200/50 border border-base-content/10 flex items-center justify-center relative">
@@ -346,7 +366,6 @@ export default function ExifCleanerComponent() {
                                 </span>
                             </div>
 
-                            {/* Résultat si déjà nettoyé */}
                             {cleanedResult && (
                                 <div className="alert alert-soft alert-success flex items-center justify-between p-3 text-xs">
                                     <div className="flex items-center gap-2">
@@ -362,7 +381,6 @@ export default function ExifCleanerComponent() {
                             )}
                         </div>
 
-                        {/* Colonne droite : Rapport d'inspection EXIF */}
                         <div className="md:col-span-7 flex flex-col gap-4">
                             <div className="card card-border bg-base-100 p-5 flex flex-col gap-4">
                                 <div className="flex items-center justify-between border-b border-base-content/10 pb-3">
@@ -450,8 +468,7 @@ export default function ExifCleanerComponent() {
                                                                 ? `f/${exif.fNumber}`
                                                                 : null,
                                                             exif.exposureTime
-                                                                ? exif.exposureTime <
-                                                                  1
+                                                                ? exif.exposureTime < 1
                                                                     ? `1/${Math.round(1 / exif.exposureTime)}s`
                                                                     : `${exif.exposureTime}s`
                                                                 : null,
@@ -463,15 +480,12 @@ export default function ExifCleanerComponent() {
                                             )}
                                         </div>
 
-                                        {/* Tiroir déroulant pour afficher TOUTES les balises brutes */}
                                         {exif.allRawTags.length > 0 && (
                                             <div className="border-t border-base-content/10 pt-2">
                                                 <button
                                                     type="button"
                                                     onClick={() =>
-                                                        setShowRawTags(
-                                                            !showRawTags,
-                                                        )
+                                                        setShowRawTags(!showRawTags)
                                                     }
                                                     className="btn btn-xs btn-ghost gap-1.5 text-base-content/60"
                                                 >
@@ -484,30 +498,26 @@ export default function ExifCleanerComponent() {
                                                     ></span>
                                                     <span>
                                                         {t("rawTags", {
-                                                            count: exif
-                                                                .allRawTags
-                                                                .length,
+                                                            count: exif.allRawTags.length,
                                                         })}
                                                     </span>
                                                 </button>
 
                                                 {showRawTags && (
                                                     <div className="max-h-52 overflow-y-auto mt-2 p-2 bg-base-200/50 rounded-lg border border-base-content/5 font-mono text-[11px] flex flex-col gap-1">
-                                                        {exif.allRawTags.map(
-                                                            ([k, v]) => (
-                                                                <div
-                                                                    key={k}
-                                                                    className="flex justify-between gap-4 border-b border-base-content/5 pb-1"
-                                                                >
-                                                                    <span className="text-primary truncate">
-                                                                        {k}
-                                                                    </span>
-                                                                    <span className="text-base-content/80 text-right break-all">
-                                                                        {v}
-                                                                    </span>
-                                                                </div>
-                                                            ),
-                                                        )}
+                                                        {exif.allRawTags.map(([k, v]) => (
+                                                            <div
+                                                                key={k}
+                                                                className="flex justify-between gap-4 border-b border-base-content/5 pb-1"
+                                                            >
+                                                                <span className="text-primary truncate">
+                                                                    {k}
+                                                                </span>
+                                                                <span className="text-base-content/80 text-right break-all">
+                                                                    {v}
+                                                                </span>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>
@@ -522,7 +532,6 @@ export default function ExifCleanerComponent() {
                                     </div>
                                 )}
 
-                                {/* Boutons d'action */}
                                 <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-base-content/10">
                                     <button
                                         type="button"

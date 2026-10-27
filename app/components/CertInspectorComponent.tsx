@@ -7,6 +7,53 @@ import forge from "node-forge";
 import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 import CopyButton from "@/app/components/ui/CopyButtonComponent";
 
+interface AltNameEntry {
+  type: number;
+  value?: string;
+  ip?: string;
+}
+
+interface ExtensionRequestAttribute {
+  extensions?: Array<{
+    name: string;
+    altNames?: AltNameEntry[];
+  }>;
+}
+
+interface SanExtension {
+  altNames?: AltNameEntry[];
+}
+
+interface BasicConstraintsExtension {
+  cA?: boolean;
+}
+
+interface KeyUsageExtension {
+  digitalSignature?: boolean;
+  keyEncipherment?: boolean;
+  dataEncipherment?: boolean;
+  keyCertSign?: boolean;
+  cRLSign?: boolean;
+}
+
+interface ExtKeyUsageExtension {
+  serverAuth?: boolean;
+  clientAuth?: boolean;
+  codeSigning?: boolean;
+  emailProtection?: boolean;
+}
+
+interface RsaPublicKeyLike {
+  n?: {
+    bitLength: () => number;
+  };
+}
+
+interface CsrWithSigInfo {
+  siginfo?: { algorithmOid?: string };
+  signatureOid?: string;
+}
+
 // Certificat X.509 RSA 2048 bits auto-signé valide (SANs: 0w.lat, *.0w.lat, 127.0.0.1)
 const SAMPLE_CERT = `-----BEGIN CERTIFICATE-----
 MIID4TCCAsmgAwIBAgIUI0XHIxxHTuEdQMT7u6JSRUUcLPEwDQYJKoZIhvcNAQEL
@@ -94,6 +141,15 @@ interface ParsedCertData {
   };
 }
 
+function getAttributeValue(
+  attrs: forge.pki.CertificateField[] | undefined,
+  name: string
+): string | null {
+  if (!attrs || !Array.isArray(attrs)) return null;
+  const found = attrs.find((a) => a.shortName === name || a.name === name);
+  return found && typeof found.value === "string" ? found.value : null;
+}
+
 export default function CertInspectorComponent() {
   const t = useTranslations("tools.certInspector");
   const locale = useLocale();
@@ -104,10 +160,10 @@ export default function CertInspectorComponent() {
   const [parseError, setParseError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Fallback sécurisé pour l'import node-forge en environnement ESM/Turbopack
   const pki = useMemo(() => {
     if (forge.pki) return forge.pki;
-    if ((forge as any).default?.pki) return (forge as any).default.pki;
+    const forgeModule = forge as unknown as { default?: { pki?: typeof forge.pki } };
+    if (forgeModule.default?.pki) return forgeModule.default.pki;
     return forge.pki;
   }, []);
 
@@ -156,7 +212,6 @@ export default function CertInspectorComponent() {
 
       setParseError(null);
 
-      // 1. Détection des CSR (PKCS#10)
       const csrRegex =
         /-----BEGIN (NEW )?CERTIFICATE REQUEST-----[\s\S]*?-----END (NEW )?CERTIFICATE REQUEST-----/g;
       const csrMatches = trimmed.match(csrRegex);
@@ -167,20 +222,15 @@ export default function CertInspectorComponent() {
           const csr = pki.certificationRequestFromPem(rawCsr);
           const fps = await computeFingerprints(rawCsr);
 
-          const getField = (attrs: any[], name: string) => {
-            if (!attrs || !Array.isArray(attrs)) return null;
-            const found = attrs.find((a) => a.shortName === name || a.name === name);
-            return found && typeof found.value === "string" ? found.value : null;
-          };
-
           const sans: { type: string; value: string }[] = [];
-          const extReq =
+          const extReq = (
             typeof csr.getAttribute === "function"
-              ? (csr.getAttribute({ name: "extensionRequest" }) as any)
-              : null;
+              ? (csr.getAttribute({ name: "extensionRequest" }) as unknown as ExtensionRequestAttribute | null)
+              : null
+          );
 
           if (extReq && Array.isArray(extReq.extensions)) {
-            const sanExt = extReq.extensions.find((e: any) => e.name === "subjectAltName");
+            const sanExt = extReq.extensions.find((e) => e.name === "subjectAltName");
             if (sanExt && Array.isArray(sanExt.altNames)) {
               for (const a of sanExt.altNames) {
                 sans.push({
@@ -192,8 +242,9 @@ export default function CertInspectorComponent() {
           }
 
           let keySize = "Unknown";
-          if (csr.publicKey && "n" in csr.publicKey && (csr.publicKey as any).n) {
-            keySize = `RSA ${(csr.publicKey as any).n.bitLength()} bits`;
+          const pubKey = csr.publicKey as unknown as RsaPublicKeyLike | null;
+          if (pubKey?.n && typeof pubKey.n.bitLength === "function") {
+            keySize = `RSA ${pubKey.n.bitLength()} bits`;
           }
 
           let isSigValid = false;
@@ -203,18 +254,24 @@ export default function CertInspectorComponent() {
             isSigValid = false;
           }
 
+          const csrSig = csr as unknown as CsrWithSigInfo;
+          const sigAlg =
+            csrSig.siginfo?.algorithmOid ||
+            csrSig.signatureOid ||
+            "sha256WithRSAEncryption";
+
           if (!isCancelled) {
             setParsedList([
               {
                 type: "csr",
                 rawPem: rawCsr,
                 subject: {
-                  cn: getField(csr.subject.attributes, "CN"),
-                  o: getField(csr.subject.attributes, "O"),
-                  ou: getField(csr.subject.attributes, "OU"),
-                  c: getField(csr.subject.attributes, "C"),
-                  st: getField(csr.subject.attributes, "ST"),
-                  l: getField(csr.subject.attributes, "L"),
+                  cn: getAttributeValue(csr.subject.attributes, "CN"),
+                  o: getAttributeValue(csr.subject.attributes, "O"),
+                  ou: getAttributeValue(csr.subject.attributes, "OU"),
+                  c: getAttributeValue(csr.subject.attributes, "C"),
+                  st: getAttributeValue(csr.subject.attributes, "ST"),
+                  l: getAttributeValue(csr.subject.attributes, "L"),
                 },
                 issuer: { cn: null, o: null, c: null },
                 validity: null,
@@ -223,7 +280,7 @@ export default function CertInspectorComponent() {
                   algorithm: "RSA / PKCS#1",
                   keySize,
                 },
-                sigAlg: (csr as any).siginfo?.algorithmOid || (csr as any).signatureOid || "sha256WithRSAEncryption",
+                sigAlg,
                 serialNumber: null,
                 extensions: { isCa: null, keyUsage: [], extKeyUsage: [] },
                 csrVerified: isSigValid,
@@ -240,7 +297,6 @@ export default function CertInspectorComponent() {
         }
       }
 
-      // 2. Détection des Certificats X.509
       const certRegex =
         /-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/g;
       const certMatches = trimmed.match(certRegex);
@@ -253,14 +309,8 @@ export default function CertInspectorComponent() {
             const cert = pki.certificateFromPem(rawCert);
             const fps = await computeFingerprints(rawCert);
 
-            const getField = (attrs: any[], name: string) => {
-              if (!attrs || !Array.isArray(attrs)) return null;
-              const found = attrs.find((a) => a.shortName === name || a.name === name);
-              return found && typeof found.value === "string" ? found.value : null;
-            };
-
             const sans: { type: string; value: string }[] = [];
-            const sanExt = cert.getExtension("subjectAltName") as any;
+            const sanExt = cert.getExtension("subjectAltName") as unknown as SanExtension | null;
             if (sanExt && Array.isArray(sanExt.altNames)) {
               for (const a of sanExt.altNames) {
                 sans.push({
@@ -276,8 +326,9 @@ export default function CertInspectorComponent() {
             const diffDays = Math.round((notAfter.getTime() - now.getTime()) / (1000 * 3600 * 24));
 
             let keySize = "Unknown";
-            if (cert.publicKey && "n" in cert.publicKey && (cert.publicKey as any).n) {
-              keySize = `RSA ${(cert.publicKey as any).n.bitLength()} bits`;
+            const certPubKey = cert.publicKey as unknown as RsaPublicKeyLike | null;
+            if (certPubKey?.n && typeof certPubKey.n.bitLength === "function") {
+              keySize = `RSA ${certPubKey.n.bitLength()} bits`;
             }
 
             let serialFormatted = cert.serialNumber || "";
@@ -286,10 +337,10 @@ export default function CertInspectorComponent() {
               if (pairs) serialFormatted = pairs.join(":").toUpperCase();
             }
 
-            const basicConstExt = cert.getExtension("basicConstraints") as any;
+            const basicConstExt = cert.getExtension("basicConstraints") as unknown as BasicConstraintsExtension | null;
             const isCa = basicConstExt ? Boolean(basicConstExt.cA) : false;
 
-            const kuExt = cert.getExtension("keyUsage") as any;
+            const kuExt = cert.getExtension("keyUsage") as unknown as KeyUsageExtension | null;
             const keyUsageList: string[] = [];
             if (kuExt) {
               if (kuExt.digitalSignature) keyUsageList.push("Digital Signature");
@@ -299,7 +350,7 @@ export default function CertInspectorComponent() {
               if (kuExt.cRLSign) keyUsageList.push("CRL Sign");
             }
 
-            const ekuExt = cert.getExtension("extKeyUsage") as any;
+            const ekuExt = cert.getExtension("extKeyUsage") as unknown as ExtKeyUsageExtension | null;
             const extKeyUsageList: string[] = [];
             if (ekuExt) {
               if (ekuExt.serverAuth) extKeyUsageList.push("TLS Web Server Authentication");
@@ -312,17 +363,17 @@ export default function CertInspectorComponent() {
               type: "cert",
               rawPem: rawCert,
               subject: {
-                cn: getField(cert.subject.attributes, "CN"),
-                o: getField(cert.subject.attributes, "O"),
-                ou: getField(cert.subject.attributes, "OU"),
-                c: getField(cert.subject.attributes, "C"),
-                st: getField(cert.subject.attributes, "ST"),
-                l: getField(cert.subject.attributes, "L"),
+                cn: getAttributeValue(cert.subject.attributes, "CN"),
+                o: getAttributeValue(cert.subject.attributes, "O"),
+                ou: getAttributeValue(cert.subject.attributes, "OU"),
+                c: getAttributeValue(cert.subject.attributes, "C"),
+                st: getAttributeValue(cert.subject.attributes, "ST"),
+                l: getAttributeValue(cert.subject.attributes, "L"),
               },
               issuer: {
-                cn: getField(cert.issuer.attributes, "CN"),
-                o: getField(cert.issuer.attributes, "O"),
-                c: getField(cert.issuer.attributes, "C"),
+                cn: getAttributeValue(cert.issuer.attributes, "CN"),
+                o: getAttributeValue(cert.issuer.attributes, "O"),
+                c: getAttributeValue(cert.issuer.attributes, "C"),
               },
               validity: {
                 notBefore,

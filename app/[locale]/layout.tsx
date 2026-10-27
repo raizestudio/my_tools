@@ -1,9 +1,13 @@
 // app/[locale]/layout.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import {
+    getMessages,
+    getTranslations,
+    setRequestLocale,
+} from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { routing } from "@/i18n/routing";
+import { routing, isValidLocale } from "@/i18n/routing";
 import "../globals.css";
 
 // Components
@@ -15,82 +19,86 @@ import ThemeScript from "@/app/components/ThemeScript";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://0w.lat";
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+    return routing.locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({
-  params,
+    params,
 }: {
-  params: Promise<{ locale: string }>;
+    params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+    const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
-    return {};
-  }
+    if (!isValidLocale(locale)) {
+        notFound();
+    }
 
-  const t = await getTranslations({ locale, namespace: "meta" });
-  const isFr = locale === "fr";
+    const t = await getTranslations({ locale, namespace: "meta" });
+    const isFr = locale === "fr";
 
-  return {
-    metadataBase: new URL(siteUrl),
-    title: {
-      default: t("title"),
-      template: "%s | 0w",
-    },
-    description: t("desc"),
-    alternates: {
-      canonical: `${siteUrl}/${locale}`,
-      languages: {
-        en: `${siteUrl}/en`,
-        fr: `${siteUrl}/fr`,
-      },
-    },
-    openGraph: {
-      siteName: "0w Toolbox",
-      type: "website",
-      locale: isFr ? "fr_FR" : "en_US",
-      alternateLocale: [isFr ? "en_US" : "fr_FR"],
-      url: `${siteUrl}/${locale}`,
-      title: t("title"),
-      description: t("desc"),
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+    return {
+        metadataBase: new URL(siteUrl),
+        title: {
+            default: t("title"),
+            template: "%s | 0w",
+        },
+        description: t("desc"),
+        alternates: {
+            canonical: `${siteUrl}/${locale}`,
+            languages: {
+                en: `${siteUrl}/en`,
+                fr: `${siteUrl}/fr`,
+            },
+        },
+        openGraph: {
+            siteName: "0w Toolbox",
+            type: "website",
+            locale: isFr ? "fr_FR" : "en_US",
+            alternateLocale: [isFr ? "en_US" : "fr_FR"],
+            url: `${siteUrl}/${locale}`,
+            title: t("title"),
+            description: t("desc"),
+        },
+        robots: {
+            index: true,
+            follow: true,
+        },
+    };
 }
 
 export default async function LocaleLayout({
-  children,
-  params,
+    children,
+    params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+    const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
-    notFound();
-  }
+    if (!isValidLocale(locale)) {
+        notFound();
+    }
 
-  setRequestLocale(locale);
-  const messages = await getMessages();
+    setRequestLocale(locale);
+    const messages = await getMessages();
 
-  return (
-    <html lang={locale} className="h-full antialiased" suppressHydrationWarning>
-      <head>
-        <ThemeScript />
-      </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <NextIntlClientProvider messages={messages}>
-          <NavbarComponent />
-          <div className="flex flex-col grow">{children}</div>
-          <FooterComponent />
-          <PrivacyModalComponent />
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html
+            lang={locale}
+            className="h-full antialiased"
+            suppressHydrationWarning
+        >
+            <head>
+                <ThemeScript />
+            </head>
+            <body className="min-h-full flex flex-col" suppressHydrationWarning>
+                <NextIntlClientProvider messages={messages}>
+                    <NavbarComponent />
+                    <div className="flex flex-col grow">{children}</div>
+                    <FooterComponent />
+                    <PrivacyModalComponent />
+                </NextIntlClientProvider>
+            </body>
+        </html>
+    );
 }

@@ -3,11 +3,10 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
+import CopyButton from "@/app/components/ui/CopyButtonComponent";
 
 type TargetOutput = "typescript" | "pydantic" | "formatted" | "minified";
-
-import ToolHeader from "@/app/components/ui/ToolHeaderComponent";
 
 const DEFAULT_SAMPLE_JSON = JSON.stringify(
   {
@@ -44,13 +43,13 @@ function generateTypeScript(rootName: string, jsonVal: unknown): string {
   const definitions: string[] = [];
 
   function inferType(val: unknown, currentKey: string): string {
-    if (val === null) return "any";
+    if (val === null) return "unknown";
     if (typeof val === "string") return "string";
     if (typeof val === "number") return "number";
     if (typeof val === "boolean") return "boolean";
 
     if (Array.isArray(val)) {
-      if (val.length === 0) return "any[]";
+      if (val.length === 0) return "unknown[]";
       const itemTypes = Array.from(
         new Set(val.map((item) => inferType(item, currentKey))),
       );
@@ -76,7 +75,7 @@ function generateTypeScript(rootName: string, jsonVal: unknown): string {
       return typeName;
     }
 
-    return "any";
+    return "unknown";
   }
 
   const rootTypeName = toPascalCase(rootName);
@@ -193,12 +192,10 @@ function generatePydantic(rootName: string, jsonVal: unknown): string {
 
 export default function JsonConverterComponent() {
   const t = useTranslations("tools.jsonConverter");
-  const tCommon = useTranslations("common");
 
   const [inputJson, setInputJson] = useState<string>(DEFAULT_SAMPLE_JSON);
   const [rootName, setRootName] = useState<string>("Root");
   const [activeTab, setActiveTab] = useState<TargetOutput>("typescript");
-  const [copied, setCopied] = useState(false);
 
   const { parsedJson, jsonError, outputResult } = useMemo(() => {
     let parsed: unknown = null;
@@ -237,17 +234,6 @@ export default function JsonConverterComponent() {
     return { parsedJson: parsed, jsonError: error, outputResult: result };
   }, [inputJson, rootName, activeTab, t]);
 
-  const handleCopy = async () => {
-    if (!outputResult || jsonError) return;
-    try {
-      await navigator.clipboard.writeText(outputResult);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleFormatInput = () => {
     if (parsedJson) {
       setInputJson(JSON.stringify(parsedJson, null, 2));
@@ -256,7 +242,6 @@ export default function JsonConverterComponent() {
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full">
-      {/* Header & Fil d'Ariane */}
       <ToolHeader
         title={t("title")}
         description={t("desc")}
@@ -281,7 +266,6 @@ export default function JsonConverterComponent() {
         }
       />
 
-      {/* Configuration Racine */}
       <div className="card card-border bg-base-100 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <label className="text-xs font-semibold text-base-content/70">
@@ -300,7 +284,6 @@ export default function JsonConverterComponent() {
         </span>
       </div>
 
-      {/* Main Split-View Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Colonne Gauche: Entrée JSON */}
         <div className="card card-border bg-base-100 p-4 flex flex-col gap-3 shadow-sm">
@@ -341,7 +324,6 @@ export default function JsonConverterComponent() {
         {/* Colonne Droite: Sortie Typée */}
         <div className="card card-border bg-base-100 p-4 flex flex-col gap-3 shadow-sm">
           <div className="flex flex-wrap justify-between items-center gap-2 pb-2 border-b border-base-content/10">
-            {/* Onglets de sélection du format */}
             <div className="join">
               <button
                 type="button"
@@ -373,21 +355,13 @@ export default function JsonConverterComponent() {
               </button>
             </div>
 
-            {/* Bouton de Copie */}
-            <button
-              type="button"
-              onClick={handleCopy}
-              disabled={Boolean(jsonError) || !parsedJson}
-              className={`btn btn-xs gap-1.5 ${copied ? "btn-success" : "btn-primary"}`}
-            >
-              <span
-                className={`icon-[lucide--${copied ? "check" : "copy"}] size-3.5`}
-              ></span>
-              <span>{copied ? t("copied") : t("copy")}</span>
-            </button>
+            <CopyButton
+              text={outputResult}
+              size="xs"
+              variant="primary"
+            />
           </div>
 
-          {/* Zone de code généré */}
           <div className="relative">
             <textarea
               readOnly
