@@ -85,7 +85,7 @@ export default async function LocaleLayout({
     return (
         <html
             lang={locale}
-            className="h-full antialiased"
+            className="h-full antialiased scrollbar-gutter:stable"
             suppressHydrationWarning
         >
             <head>
