@@ -21,7 +21,6 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
   const tCategories = useTranslations("categories");
   const tTools = useTranslations("tools");
 
-  // Types stricts extraits des instances de traduction
   type ToolKey = Parameters<typeof tTools>[0];
   type CategoryKey = Parameters<typeof tCategories>[0];
 
@@ -47,7 +46,6 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
 
   const isOffline = isLive === false;
 
-  // Filtrage combiné catégorie + recherche multilingue via les messages next-intl
   const filteredApps = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
