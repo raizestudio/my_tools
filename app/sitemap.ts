@@ -18,6 +18,7 @@ const toolSlugs = [
     "browser-leak-inspector",
     "hex-analyzer",
     "pdf-toolkit",
+    "network-probe",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
