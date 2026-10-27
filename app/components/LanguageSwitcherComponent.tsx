@@ -25,8 +25,8 @@ export default function LanguageSwitcher() {
         type="button"
         disabled={isPending}
         onClick={() => switchLocale('fr')}
-        className={`join-item btn btn-xs ${
-          locale === 'fr' ? 'btn-primary' : 'btn-ghost'
+        className={`join-item btn btn-xs text-base-content shadow-none ${
+          locale === 'fr' ? 'btn-primary text-primary-content' : 'bg-base-100 border-base-100'
         }`}
       >
         FR
@@ -35,8 +35,8 @@ export default function LanguageSwitcher() {
         type="button"
         disabled={isPending}
         onClick={() => switchLocale('en')}
-        className={`join-item btn btn-xs ${
-          locale === 'en' ? 'btn-primary' : 'btn-ghost'
+        className={`join-item btn btn-xs text-base-content shadow-none ${
+          locale === 'en' ? 'btn-primary text-primary-content' : 'bg-base-100 border-base-100'
         }`}
       >
         EN
