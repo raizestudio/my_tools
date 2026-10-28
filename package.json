@@ -19,6 +19,7 @@
     "next-intl": "^4.14.9",
     "node-forge": "^1.4.0",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.4.299",
     "qrcode.react": "^4.2.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"

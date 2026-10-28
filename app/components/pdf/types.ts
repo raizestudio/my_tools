@@ -1,4 +1,4 @@
-export type ActiveTab = "merge" | "organize";
+export type ActiveTab = "merge" | "organize" | "edit";
 
 export interface MergeFileItem {
   id: string;

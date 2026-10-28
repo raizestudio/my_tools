@@ -9,6 +9,7 @@ import { ActiveTab, MergeFileItem, PageItem } from "@/app/components/pdf/types";
 import PdfPreviewModal from "@/app/components/pdf/PdfPreviewModalComponent";
 import PdfMergeSection from "@/app/components/pdf/PdfMergeSectionComponent";
 import PdfOrganizeSection from "@/app/components/pdf/PdfOrganizeSectionComponent";
+import PdfEditSection from "@/app/components/pdf/PdfEditSectionComponent";
 
 export default function PdfToolkitComponent() {
     const t = useTranslations("tools.pdfToolkit");
@@ -391,14 +392,16 @@ export default function PdfToolkitComponent() {
                 }
                 actions={
                     <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            onClick={handleLoadDemo}
-                            disabled={isProcessing}
-                            className="btn btn-xs btn-outline"
-                        >
-                            {t("loadSample")}
-                        </button>
+                        {activeTab !== "edit" && (
+                            <button
+                                type="button"
+                                onClick={handleLoadDemo}
+                                disabled={isProcessing}
+                                className="btn btn-xs btn-outline"
+                            >
+                                {t("loadSample")}
+                            </button>
+                        )}
                         {((activeTab === "merge" && mergeFiles.length > 0) ||
                             (activeTab === "organize" &&
                                 singlePdfFile !== null)) && (
@@ -414,7 +417,7 @@ export default function PdfToolkitComponent() {
                 }
             />
 
-            <div className="join w-full max-w-lg mx-auto grid grid-cols-2 bg-base-200/50 p-0.5 rounded-xl border border-base-content/5">
+            <div className="join w-full max-w-4xl mx-auto grid grid-cols-3 bg-base-200/50 p-0.5 rounded-xl border border-base-content/5">
                 <button
                     type="button"
                     onClick={() => setActiveTab("merge")}
@@ -439,6 +442,18 @@ export default function PdfToolkitComponent() {
                     <span className="icon-[lucide--layout-grid] size-4"></span>
                     <span>{t("tabOrganize")}</span>
                 </button>
+                <button
+                    type="button"
+                    onClick={() => setActiveTab("edit")}
+                    className={`btn btn-sm join-item ${
+                        activeTab === "edit"
+                            ? "btn-primary shadow-sm"
+                            : "btn-ghost"
+                    }`}
+                >
+                    <span className="icon-[lucide--file-pen] size-4"></span>
+                    <span>{t("tabEdit")}</span>
+                </button>
             </div>
 
             {activeTab === "merge" ? (
@@ -451,7 +466,7 @@ export default function PdfToolkitComponent() {
                     onExecuteMerge={handleExecuteMerge}
                     onPreview={handleOpenPreview}
                 />
-            ) : (
+            ) : activeTab === "organize" ? (
                 <PdfOrganizeSection
                     file={singlePdfFile}
                     pages={pages}
@@ -467,6 +482,8 @@ export default function PdfToolkitComponent() {
                     rangeError={rangeError}
                     onPreview={handleOpenPreview}
                 />
+            ) : (
+                <PdfEditSection onPreview={handleOpenPreview} />
             )}
 
             <PdfPreviewModal
