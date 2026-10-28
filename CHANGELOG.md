@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/raizestudio/zerow/compare/0w-v1.4.1...0w-v1.5.0) (2026-10-28)
+
+
+### Features
+
+* add api status to navbar ([288fec6](https://github.com/raizestudio/zerow/commit/288fec64773c1e5913463e3a49b76477f32cc866))
+
 ## [1.4.1](https://github.com/raizestudio/zerow/compare/0w-v1.4.0...0w-v1.4.1) (2026-10-28)
 
 
