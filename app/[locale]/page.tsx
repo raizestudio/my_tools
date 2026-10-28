@@ -118,7 +118,7 @@ export default async function LandingPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="flex flex-col gap-24 pb-20 max-w-6xl mx-auto w-full px-4 md:px-6">
+      <div className="flex flex-col gap-24 pb-20 w-full">
         <HeroSectionComponent locale={locale} />
         <ThreatMatrixComponent locale={locale} />
         <TechnicalPillarsComponent locale={locale} />

@@ -2,6 +2,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { AVAILABLE_TOOLS } from "@/app/lib/tools";
+import HeroAnimationWrapper from "./HeroAnimationWrapper";
+import ScrollVelocityComponent from "./ScrollVelocityComponent";
+import TypewriterTitleComponent from "./TypewriterTitleComponent";
 
 interface HeroSectionProps {
   locale: string;
@@ -13,79 +16,120 @@ export default async function HeroSectionComponent({
   const t = await getTranslations({ locale, namespace: "landing" });
   const toolCount = AVAILABLE_TOOLS.length;
 
+  const rotatingPhrases = [
+    t("heroTitle2"),
+  ];
+
   return (
-    <section className="pt-12 md:pt-20 flex flex-col items-center text-center gap-6 relative">
-      {/* Ambient Radial Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-96 bg-primary/10 rounded-full blur-3xl pointer-events-none -z-10" />
+    <section className="relative w-full overflow-hidden pt-10 md:pt-16 pb-8 flex flex-col items-center gap-8 isolate">
+      {/* 1. Primary Top Ambient Glow (Wide Soft Aurora) */}
+      <div
+        aria-hidden="true"
+        className="absolute -top-10 left-1/2 -translate-x-1/2 w-[550px] sm:w-[850px] lg:w-[1000px] h-[320px] sm:h-[420px] bg-gradient-to-b from-primary/25 via-secondary/15 to-transparent rounded-full blur-[90px] sm:blur-[130px] pointer-events-none -z-1"
+      />
 
-      {/* Feature Badge */}
-      <div className="badge badge-soft badge-primary py-3 px-4 text-xs font-mono font-medium gap-2 shadow-xs">
-        <span className="icon-[lucide--shield-check] size-3.5 text-primary"></span>
-        <span>{t("badge", { count: toolCount })}</span>
+      {/* 2. Concentrated Core Glow (Directly behind the H1 for contrast) */}
+      <div
+        aria-hidden="true"
+        className="absolute top-16 left-1/2 -translate-x-1/2 w-[280px] sm:w-[480px] h-[180px] sm:h-[240px] bg-primary/20 rounded-full blur-[70px] sm:blur-[95px] pointer-events-none -z-1"
+      />
+
+      {/* Main Hero Content (Kept on z-10 above the glow) */}
+      <div className="relative z-10 px-4 w-full max-w-4xl">
+        <HeroAnimationWrapper>
+          {/* Feature Badge */}
+          <div className="badge badge-soft badge-primary py-3 px-4 text-xs font-mono font-medium gap-2 shadow-xs mb-4 rounded-full border border-primary/25 backdrop-blur-md">
+            <span className="icon-[lucide--shield-check] size-3.5 text-primary"></span>
+            <span>{t("badge", { count: toolCount })}</span>
+          </div>
+
+          {/* Typewriter H1 Heading */}
+          <TypewriterTitleComponent
+            prefix={t("heroTitle1")}
+            words={rotatingPhrases}
+            typingSpeed={70}
+            deletingSpeed={30}
+            pauseDuration={2200}
+          />
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-base-content/75 text-center max-w-2xl leading-relaxed mb-8">
+            {t("heroSub")}
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={`/${locale}/tools`}
+              className="btn btn-primary btn-md gap-2 shadow-lg shadow-primary/20 font-semibold px-6 rounded-xl transition-transform hover:scale-[1.02]"
+            >
+              <span>{t("ctaExplore", { count: toolCount })}</span>
+              <span className="icon-[lucide--arrow-right] size-4"></span>
+            </Link>
+
+            <Link
+              href={`/${locale}/api-runner`}
+              className="btn btn-outline btn-md gap-2 font-semibold px-6 rounded-xl transition-transform hover:scale-[1.02] bg-base-100/50 backdrop-blur-sm"
+            >
+              <span className="icon-[lucide--terminal] size-4 text-primary"></span>
+              <span>{t("ctaRunner")}</span>
+            </Link>
+          </div>
+
+          {/* Dynamic Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-3xl mt-12 pt-8 border-t border-base-content/10">
+            {[
+              { val: toolCount, label: t("statsTools"), color: "text-primary" },
+              { val: "0", label: t("statsLogs"), color: "text-success" },
+              { val: "0", label: t("statsDb"), color: "text-warning" },
+              { val: "0", label: t("statsTrackers"), color: "text-info" },
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-center p-3 rounded-xl bg-base-200/40 border border-base-content/10 backdrop-blur-xs transition-colors hover:bg-base-200/70"
+              >
+                <span
+                  className={`text-xl sm:text-2xl font-bold font-mono ${stat.color}`}
+                >
+                  {stat.val}
+                </span>
+                <span className="text-xs text-base-content/60 mt-0.5">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </HeroAnimationWrapper>
       </div>
 
-      {/* H1 Heading */}
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-base-content max-w-4xl leading-[1.15]">
-        {t("heroTitle1")}{" "}
-        <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          {t("heroTitle2")}
-        </span>
-      </h1>
+      {/* Infinite Velocity Stream with Word Hover */}
+      <div className="relative z-10 w-full mt-4">
+        <div className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-linear-to-r from-base-100 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-linear-to-l from-base-100 to-transparent z-10 pointer-events-none" />
 
-      {/* Subtitle */}
-      <p className="text-base sm:text-lg text-base-content/70 max-w-2xl leading-relaxed">
-        {t("heroSub")}
-      </p>
-
-      {/* Action Buttons */}
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-        <Link
-          href={`/${locale}/tools`}
-          className="btn btn-primary btn-md gap-2 shadow-sm font-semibold px-6"
-        >
-          <span>{t("ctaExplore", { count: toolCount })}</span>
-          <span className="icon-[lucide--arrow-right] size-4"></span>
-        </Link>
-
-        <Link
-          href={`/${locale}/api-runner`}
-          className="btn btn-outline btn-md gap-2 font-semibold"
-        >
-          <span className="icon-[lucide--terminal] size-4 text-primary"></span>
-          <span>{t("ctaRunner")}</span>
-        </Link>
-      </div>
-
-      {/* Dynamic Metrics Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-3xl mt-8 pt-8 border-t border-base-content/10">
-        <div className="flex flex-col items-center p-3 rounded-xl bg-base-200/30 border border-base-content/5">
-          <span className="text-xl sm:text-2xl font-bold font-mono text-primary">
-            {toolCount}
-          </span>
-          <span className="text-xs text-base-content/60">
-            {t("statsTools")}
-          </span>
-        </div>
-        <div className="flex flex-col items-center p-3 rounded-xl bg-base-200/30 border border-base-content/5">
-          <span className="text-xl sm:text-2xl font-bold font-mono text-success">
-            0
-          </span>
-          <span className="text-xs text-base-content/60">{t("statsLogs")}</span>
-        </div>
-        <div className="flex flex-col items-center p-3 rounded-xl bg-base-200/30 border border-base-content/5">
-          <span className="text-xl sm:text-2xl font-bold font-mono text-warning">
-            0
-          </span>
-          <span className="text-xs text-base-content/60">{t("statsDb")}</span>
-        </div>
-        <div className="flex flex-col items-center p-3 rounded-xl bg-base-200/30 border border-base-content/5">
-          <span className="text-xl sm:text-2xl font-bold font-mono text-info">
-            0
-          </span>
-          <span className="text-xs text-base-content/60">
-            {t("statsTrackers")}
-          </span>
-        </div>
+        <ScrollVelocityComponent
+          texts={[
+            "CLIENT-SIDE WASM",
+            "ZERO TELEMETRY",
+            "NO DATABASE",
+            "WEBCRYPTO PRIMITIVES",
+            "100% STATELESS",
+            "OPEN SOURCE",
+          ]}
+          baseVelocity={1.2}
+        />
+        <ScrollVelocityComponent
+          texts={[
+            "NETWORK AUDITING",
+            "JWT INSPECTION",
+            "DNSSEC CHAIN",
+            "ZERO-KNOWLEDGE",
+            "API RUNNER",
+            "PRIVACY FIRST",
+          ]}
+          baseVelocity={-1.2}
+          className="-mt-2"
+        />
       </div>
     </section>
   );
