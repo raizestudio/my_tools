@@ -6,6 +6,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ToolItem, ToolCategory } from "@/app/lib/tools";
 import AppCardComponent from "@/app/components/AppCardComponent";
+import { useHealth } from "@/app/providers/HealthProvider";
 
 interface DashboardGridProps {
   apps: ToolItem[];
@@ -28,41 +29,23 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
   type ToolKey = Parameters<typeof tTools>[0];
   type CategoryKey = Parameters<typeof tCategories>[0];
 
+  const { isLive } = useHealth();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. Derive selectedCategory directly from the URL during render (No useState, no useEffect)
+  // Derive selectedCategory directly from URL
   const categoryParam = searchParams.get("category");
   const selectedCategory: ToolCategory | "all" =
     categoryParam && VALID_CATEGORIES.has(categoryParam)
       ? (categoryParam as ToolCategory)
       : "all";
 
-  // 2. Purely local transient UI state
-  const [isLive, setIsLive] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [offlineOnly, setOfflineOnly] = useState(false);
 
-  // Check backend health
-  useEffect(() => {
-    const checkHealth = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      try {
-        const res = await fetch(`${apiUrl}/health`, {
-          signal: AbortSignal.timeout(2500),
-        });
-        setIsLive(res.ok);
-      } catch {
-        setIsLive(false);
-      }
-    };
-
-    checkHealth();
-  }, []);
-
-  // Keyboard shortcut listener (/ or ⌘K) to focus search
+  // Keyboard shortcut listener (/ or ⌘K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
@@ -80,7 +63,6 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // 3. Category switch only mutates the URL; Next.js re-renders with the new derived value
   const handleCategoryChange = (cat: ToolCategory | "all") => {
     const params = new URLSearchParams(searchParams.toString());
     if (cat === "all") {
@@ -99,15 +81,11 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
     const q = searchQuery.trim().toLowerCase();
 
     return apps.filter((app) => {
-      // 1. Category Filter
       const matchesCategory =
         selectedCategory === "all" || app.category === selectedCategory;
       if (!matchesCategory) return false;
 
-      // 2. Offline-only Filter
       if (offlineOnly && app.networkRequired) return false;
-
-      // 3. Search Query Filter
       if (!q) return true;
 
       const titleKey = `${app.i18nKey}.title` as ToolKey;
@@ -206,7 +184,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           })}
         </div>
 
-        {/* Right Actions: Offline Toggle + Live Search Bar */}
+        {/* Right Actions: Offline Toggle + Live Search */}
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -251,7 +229,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         </div>
       </div>
 
-      {/* Active Search & Filter Feedback Line */}
+      {/* Active Filter Line */}
       {(searchQuery.trim() || offlineOnly || selectedCategory !== "all") && (
         <div className="flex items-center justify-between text-xs text-base-content/60 px-1 font-mono -mt-3">
           <div className="flex items-center gap-2">
@@ -284,7 +262,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         </div>
       )}
 
-      {/* Empty State Card */}
+      {/* Empty State */}
       {filteredApps.length === 0 && (
         <div className="card card-border bg-base-100/60 p-12 text-center flex flex-col items-center justify-center gap-3 shadow-xs">
           <span className="icon-[lucide--search-x] size-10 text-base-content/40"></span>
@@ -305,7 +283,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
         </div>
       )}
 
-      {/* Grouped View: When viewing "all" with no active search or sub-filters */}
+      {/* Grouped View */}
       {selectedCategory === "all" && searchQuery.trim() === "" && !offlineOnly ? (
         <div className="flex flex-col gap-10">
           {CATEGORY_META.map((cat) => {
@@ -360,7 +338,7 @@ export default function DashboardGrid({ apps }: DashboardGridProps) {
           })}
         </div>
       ) : (
-        /* Flat Filtered Grid: When a specific category, query, or offline filter is active */
+        /* Flat Filtered Grid */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredApps.map((app) => (
             <AppCardComponent

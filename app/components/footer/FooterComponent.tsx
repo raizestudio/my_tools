@@ -3,14 +3,15 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import {version} from '@/package.json';
+import { version as appVersion } from "@/package.json";
+import { useHealth } from "@/app/providers/HealthProvider";
 
 const currentYear = new Date().getFullYear();
-
 
 export default function FooterComponent() {
   const tCommon = useTranslations("common");
   const tCategories = useTranslations("categories");
+  const { version: apiVersion } = useHealth();
 
   return (
     <footer className="w-full bg-base-200/60 border-t border-base-content/10 text-base-content mt-auto">
@@ -36,7 +37,7 @@ export default function FooterComponent() {
               backed by stateless, zero-log memory relays.
             </p>
 
-            {/* Architecture Guarantee Badge */}
+            {/* Architecture Guarantee Badges */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="badge badge-soft badge-success badge-sm gap-1.5 font-mono text-[11px] py-2.5">
                 <span className="size-1.5 rounded-full bg-success"></span>
@@ -103,7 +104,7 @@ export default function FooterComponent() {
             </ul>
           </div>
 
-          {/* Column 2: Key Utilities */}
+          {/* Column 2: Popular Tools */}
           <div className="flex flex-col gap-3">
             <span className="footer-title text-xs font-mono font-bold tracking-wider uppercase text-base-content/50">
               Popular Tools
@@ -220,8 +221,24 @@ export default function FooterComponent() {
             </Link>
             <span>—</span>
             <span>Licensed under MIT</span>
-            <span>-</span>
-            <span>{ version }</span>
+            <span className="text-base-content/30">•</span>
+            <span
+              className="badge badge-xs badge-soft badge-neutral font-mono font-medium"
+              title="Web App Version"
+            >
+              v{appVersion}
+            </span>
+            {apiVersion && (
+              <>
+                <span className="text-base-content/30">•</span>
+                <span
+                  className="badge badge-xs badge-soft badge-primary font-mono font-medium"
+                  title="FastAPI Engine Version"
+                >
+                  API v{apiVersion}
+                </span>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-4 text-xs">
