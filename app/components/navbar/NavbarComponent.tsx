@@ -7,6 +7,7 @@ import { Link } from "@/i18n/routing";
 import LanguageSwitcher from "@/app/components/LanguageSwitcherComponent";
 import ThemeToggleComponent from "@/app/components/ThemeToggleComponent";
 import { AVAILABLE_TOOLS, ToolCategory } from "@/app/lib/tools";
+import { useHealth } from "@/app/providers/HealthProvider";
 
 interface CategoryNavConfig {
   id: ToolCategory;
@@ -41,6 +42,7 @@ export default function NavbarComponent() {
   type ToolKey = Parameters<typeof tTools>[0];
   type CategoryKey = Parameters<typeof tCategories>[0];
 
+  const { isLive, version: apiVersion } = useHealth();
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] =
     useState<ToolCategory>("security");
@@ -99,7 +101,7 @@ export default function NavbarComponent() {
           </Link>
         </div>
 
-        {/* 2. Navbar End: Apps Dropdown, Login, Theme, Language */}
+        {/* 2. Navbar End: Health Status, Apps Dropdown, Login, Theme, Language */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Unified Apps Launcher Button & Popover */}
           <div ref={menuRef} className="relative">
@@ -354,6 +356,41 @@ export default function NavbarComponent() {
           {/* Theme Toggle */}
           <ThemeToggleComponent />
 
+          {/* Backend Health Status Indicator */}
+          <div
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-mono border transition-colors ${
+              isLive === null
+                ? "border-base-content/10 bg-base-200/50 text-base-content/40"
+                : isLive
+                ? "border-success/20 bg-success/5 text-success"
+                : "border-error/30 bg-error/10 text-error animate-pulse"
+            }`}
+            title={
+              isLive === null
+                ? "Checking API relay status..."
+                : isLive
+                ? `API Relay Online${apiVersion ? ` (v${apiVersion})` : ""}`
+                : "API Relay Offline — Network tools degraded"
+            }
+          >
+            <span className="relative flex size-1.5">
+              {isLive && (
+                <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping"></span>
+              )}
+              <span
+                className={`relative inline-flex rounded-full size-1.5 ${
+                  isLive === null
+                    ? "bg-base-content/30"
+                    : isLive
+                    ? "bg-success"
+                    : "bg-error"
+                }`}
+              ></span>
+            </span>
+            <span className="hidden sm:inline font-semibold tracking-wider uppercase">
+              {isLive === null ? "API..." : isLive ? "LIVE" : "OFFLINE"}
+            </span>
+          </div>
           {/* Language Switcher */}
           <Suspense
             fallback={
