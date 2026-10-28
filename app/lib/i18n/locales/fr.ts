@@ -110,6 +110,10 @@ export const fr = {
     bannerSub:
       "Accès instantané à l'ensemble des {count} outils développeur. Sans inscription, sans carte bancaire, sans pistage.",
     bannerBtn: "Ouvrir la Boîte à Outils",
+    haveQuestionOrRequest: "Une question ou une demande?",
+    faqHelper: "0w est open-source et toutes les suggestions sont prises en considération.",
+    openIssue: "Ouvrir une Issue"
+
   },
   privacyNotice: {
     badge: "Architecture Privacy-First",

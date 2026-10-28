@@ -105,6 +105,9 @@ export const en = {
     bannerSub:
       "Instant access to all {count} developer and privacy utilities. No signup, no credit card, no tracking.",
     bannerBtn: "Open Tool Suite",
+    haveQuestionOrRequest: "Have another question or request?",
+    faqHelper: "0w is open-source and welcomes community suggestions.",
+    openIssue: "Open an Issue"
   },
   privacyNotice: {
     badge: "Privacy-First Architecture",
