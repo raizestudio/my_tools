@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/raizestudio/my_tools/compare/0w-v1.2.0...0w-v1.3.0) (2026-10-28)
+
+
+### Features
+
+* improve pdf toolkit, add pdf edit feature ([acc8318](https://github.com/raizestudio/my_tools/commit/acc83185d8fcc751f28a076a4e606e5ca15e8599))
+
 ## [1.2.0](https://github.com/raizestudio/my_tools/compare/0w-v1.1.0...0w-v1.2.0) (2026-10-27)
 
 
