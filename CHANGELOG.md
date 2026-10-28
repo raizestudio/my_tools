@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/raizestudio/zerow/compare/0w-v1.3.1...0w-v1.4.0) (2026-10-28)
+
+
+### Features
+
+* add health context ([abecff0](https://github.com/raizestudio/zerow/commit/abecff03c549591e7d9abfeb9307fa56674ddee5))
+
 ## [1.3.1](https://github.com/raizestudio/zerow/compare/0w-v1.3.0...0w-v1.3.1) (2026-10-28)
 
 
