@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/raizestudio/my_tools/compare/0w-v1.3.0...0w-v1.3.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* api runner wrong path when requestins server relai ([63b7a13](https://github.com/raizestudio/my_tools/commit/63b7a13358835ebd60e8b66384d9f70c50394310))
+
 ## [1.3.0](https://github.com/raizestudio/my_tools/compare/0w-v1.2.0...0w-v1.3.0) (2026-10-28)
 
 
