@@ -54,8 +54,8 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/raizestudio/my_tools.git
-   cd my_tools
+   git clone https://github.com/raizestudio/zerow.git
+   cd zerow
    ```
 
 2. Install dependencies:

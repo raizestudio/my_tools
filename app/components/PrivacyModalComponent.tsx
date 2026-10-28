@@ -87,7 +87,7 @@ export default function PrivacyModalComponent() {
           </p>
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <a
-              href="https://github.com/raizestudio/my_tools"
+              href="https://github.com/raizestudio/zerow"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-xs btn-outline gap-1.5"

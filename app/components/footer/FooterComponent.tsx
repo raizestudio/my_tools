@@ -160,7 +160,7 @@ export default function FooterComponent() {
             <ul className="flex flex-col gap-2 text-xs">
               <li>
                 <a
-                  href="https://github.com/raizestudio/my_tools"
+                  href="https://github.com/raizestudio/zerow"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors flex items-center gap-1.5"
@@ -171,7 +171,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <a
-                  href="https://github.com/raizestudio/my_tools/issues"
+                  href="https://github.com/raizestudio/zerow/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors flex items-center gap-1.5"
@@ -182,7 +182,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <a
-                  href="https://github.com/raizestudio/my_tools/pulls"
+                  href="https://github.com/raizestudio/zerow/pulls"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors flex items-center gap-1.5"
@@ -229,7 +229,7 @@ export default function FooterComponent() {
               No cookies. No telemetry. No database storage.
             </span>
             <a
-              href="https://github.com/raizestudio/my_tools"
+              href="https://github.com/raizestudio/zerow"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-circle btn-xs bg-base-100 text-base-content/70 hover:text-base-content shadow-none"
