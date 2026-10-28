@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/raizestudio/zerow/compare/0w-v1.4.0...0w-v1.4.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* improve secret sharing security ([6504dad](https://github.com/raizestudio/zerow/commit/6504dad8c934182aaade6616aac5edbe3ce42a45))
+
 ## [1.4.0](https://github.com/raizestudio/zerow/compare/0w-v1.3.1...0w-v1.4.0) (2026-10-28)
 
 
