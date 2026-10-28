@@ -112,7 +112,7 @@ export default function FooterComponent() {
             <ul className="flex flex-col gap-2 text-xs">
               <li>
                 <Link
-                  href="/api-runner"
+                  href="/tools/api-runner"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors"
                 >
                   API Runner & Studio
@@ -120,7 +120,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
-                  href="/pdf-toolkit"
+                  href="/tools/pdf-toolkit"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors"
                 >
                   Client-Side PDF Toolkit
@@ -128,7 +128,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
-                  href="/jwt-inspector"
+                  href="/tools/jwt-inspector"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors"
                 >
                   JWT Decoder & Verifier
@@ -136,7 +136,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
-                  href="/secret-share"
+                  href="/tools/secret-share"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors"
                 >
                   Zero-Knowledge Secrets
@@ -144,7 +144,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
-                  href="/dns-auditor"
+                  href="/tools/dns-auditor"
                   className="link link-hover text-base-content/75 hover:text-primary transition-colors"
                 >
                   DNSSEC Chain Auditor

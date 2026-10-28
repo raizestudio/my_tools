@@ -104,7 +104,7 @@ export default function AppCardComponent({ app, disabled = false }: AppCardProps
   }
 
   return (
-    <Link href={app.href} className="h-full block no-underline">
+    <Link href={`/tools${app.href}`} className="h-full block no-underline">
       {cardContent}
     </Link>
   );
