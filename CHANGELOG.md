@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/raizestudio/zerow/compare/0w-v1.5.0...0w-v1.5.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* add error catching pages ([dae701b](https://github.com/raizestudio/zerow/commit/dae701b8e02fbd801341eeb60f1d48569efc87a2))
+
 ## [1.5.0](https://github.com/raizestudio/zerow/compare/0w-v1.4.1...0w-v1.5.0) (2026-10-28)
 
 
