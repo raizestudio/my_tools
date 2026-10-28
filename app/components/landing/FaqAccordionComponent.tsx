@@ -156,7 +156,7 @@ export default function FaqAccordionComponent({ locale }: FaqAccordionProps) {
         </div>
 
         <Link
-          href="https://github.com"
+          href="https://github.com/raizestudio/zerow/issues"
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-xs sm:btn-sm btn-outline gap-1.5 shrink-0"
