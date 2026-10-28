@@ -531,7 +531,7 @@ export default function ApiRunnerComponent() {
     }
 
     try {
-      const res = await fetch(`${apiUrl}/api/http-runner`, {
+      const res = await fetch(`${apiUrl}/http-runner`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
