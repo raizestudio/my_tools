@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/raizestudio/zerow/compare/0w-v1.6.1...0w-v1.6.2) (2026-10-29)
+
+
+### Bug Fixes
+
+* add missing react crop css import ([2801bcf](https://github.com/raizestudio/zerow/commit/2801bcfcf7c909cd4293037c977a74e18807ef56))
+
 ## [1.6.1](https://github.com/raizestudio/zerow/compare/0w-v1.6.0...0w-v1.6.1) (2026-10-29)
 
 
