@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.5](https://github.com/raizestudio/zerow/compare/0w-v1.5.4...0w-v1.5.5) (2026-10-29)
+
+
+### Bug Fixes
+
+* small issue with typewriter component cursor ([87ff2fb](https://github.com/raizestudio/zerow/commit/87ff2fb59d9dad5e979a333d6c1a4e448008864c))
+
 ## [1.5.4](https://github.com/raizestudio/zerow/compare/0w-v1.5.3...0w-v1.5.4) (2026-10-29)
 
 
