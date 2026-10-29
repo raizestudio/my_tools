@@ -28,8 +28,7 @@ export default function TypewriterTitleComponent({
   const [displayedText, setDisplayedText] = useState(words[0] || "");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 1. React Idiomatic Reset: Adjust state directly during render
-  // React immediately restarts the render pass before committing to the DOM
+  // 1. React Idiomatic Reset
   if (wordsKey !== prevWordsKey) {
     setPrevWordsKey(wordsKey);
     setCurrentWordIndex(0);
@@ -101,7 +100,7 @@ export default function TypewriterTitleComponent({
         <span>{prefix}&nbsp;</span>
         <span className="inline-flex items-center align-baseline">
           <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            {displayedText}
+            {displayedText || "\u200B"}
           </span>
           <span
             aria-hidden="true"
