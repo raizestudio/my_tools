@@ -309,7 +309,7 @@ export const en = {
       ttl24h: "24 hours",
       ttl7d: "7 days",
       viewsLabel: "Allowed views",
-      views1: "1 view (Self-destructs immediately)",
+      views1: "1 view",
       views2: "2 views",
       views5: "5 views",
       submit: "Generate Secure Link",
@@ -324,6 +324,29 @@ export const en = {
       serverError: "Failed to store encrypted payload on server.",
       unexpectedError: "An unexpected error occurred during encryption.",
       zeroKnowledgeBadge: "AES-GCM Zero-Knowledge",
+      revealTitle: "Encrypted Secret",
+      revealSub: "An end-to-end encrypted message was shared with you.",
+      verifying: "Verifying secret integrity...",
+      decrypting: "Decrypting in browser memory...",
+      revealBtn: "Reveal Secret",
+      singleViewWarningTitle: "One-Time Read Notice",
+      singleViewWarningDesc:
+        "This secret is configured for 1 view. As soon as you click Reveal, it will be permanently purged from the server.",
+      multiViewWarningDesc:
+        "There are currently {count} view(s) remaining for this secret.",
+      decryptedLabel: "Decrypted Content",
+      destroyedBadge: "Destroyed on Server",
+      viewsRemainingBadge: "{count} view(s) left",
+      missingKeyError:
+        "Decryption key missing from URL. The link is incomplete.",
+      missingIdError: "Secret identifier is missing.",
+      alreadyDestroyedError:
+        "This secret has already been viewed and destroyed.",
+      serverCheckError: "Could not verify secret status on the server.",
+      burnTitle: "Secret Unavailable or Destroyed",
+      burnDesc:
+        "This secret has already expired, reached its maximum view limit, or never existed.",
+      createOwnSecret: "Send your own encrypted secret",
     },
     webhookCatcher: {
       title: "Webhook & Request Catcher",

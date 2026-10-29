@@ -1,10 +1,11 @@
 // app/[locale]/tools/secret-share/page.tsx
-import type { Metadata } from 'next';
-import SecretCreateComponent from '@/app/components/SecretCreateComponent';
+import type { Metadata } from "next";
+import SecretCreateComponent from "@/app/components/secret-share/SecretCreateComponent";
 
 export const metadata: Metadata = {
   title: `Partage de Secret Chiffré`,
-  description: 'Partagez des données confidentielles avec chiffrement de bout en bout et autodestruction.',
+  description:
+    "Partagez des données confidentielles avec chiffrement de bout en bout et autodestruction.",
 };
 
 export default function SecretSharePage() {

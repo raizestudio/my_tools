@@ -316,7 +316,7 @@ export const fr = {
       ttl24h: "24 heures",
       ttl7d: "7 jours",
       viewsLabel: "Nombre de lectures autorisées",
-      views1: "1 lecture (Autodestruction immédiate)",
+      views1: "1 lecture",
       views2: "2 lectures",
       views5: "5 lectures",
       submit: "Générer le lien sécurisé",
@@ -333,6 +333,30 @@ export const fr = {
       unexpectedError:
         "Une erreur inattendue est survenue pendant le chiffrement.",
       zeroKnowledgeBadge: "AES-GCM Zero-Knowledge",
+      revealTitle: "Secret Sécurisé",
+      revealSub: "Un message chiffré de bout en bout vous a été transmis.",
+      verifying: "Vérification de l'intégrité du secret...",
+      decrypting: "Déchiffrement en mémoire...",
+      revealBtn: "Révéler le secret",
+      singleViewWarningTitle: "Lecture unique",
+      singleViewWarningDesc:
+        "Ce secret est configuré pour 1 seule lecture. Dès que vous cliquerez sur Révéler, il sera définitivement détruit du serveur.",
+      multiViewWarningDesc:
+        "Il reste actuellement {count} vue(s) autorisée(s) pour ce message.",
+      decryptedLabel: "Contenu déchiffré",
+      destroyedBadge: "Détruit sur le serveur",
+      viewsRemainingBadge: "{count} vue(s) restante(s)",
+      missingKeyError:
+        "Clé de déchiffrement absente de l'URL. Le lien est incomplet.",
+      missingIdError: "Identifiant du secret manquant.",
+      alreadyDestroyedError:
+        "Ce secret a déjà été consulté et détruit par un autre utilisateur.",
+      serverCheckError:
+        "Impossible de vérifier l'état du secret sur le serveur.",
+      burnTitle: "Secret Indisponible ou Détruit",
+      burnDesc:
+        "Ce secret a déjà expiré, a atteint sa limite de lectures ou n'a jamais existé.",
+      createOwnSecret: "Créer votre propre secret chiffré",
     },
     webhookCatcher: {
       title: "Intercepteur de Webhooks & Requêtes",
