@@ -320,8 +320,10 @@ export default function SecretCreateComponent() {
                   } shadow-xs`}
                 >
                   <span
-                    className={`icon-[lucide--${copied ? "check" : "copy"}] size-4`}
-                  ></span>
+                    className={`size-4 ${
+                      copied ? "icon-[lucide--check]" : "icon-[lucide--copy]"
+                    }`}
+                  />
                   <span>{copied ? t("copied") : t("copy")}</span>
                 </button>
               </div>
