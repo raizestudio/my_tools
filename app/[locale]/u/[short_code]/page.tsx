@@ -1,55 +1,54 @@
 // app/[locale]/u/[short_code]/page.tsx
-import { Suspense } from 'react';
-import { notFound, redirect } from 'next/navigation';
+import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
+
+// Next.js 16 Cache Components: exempts this route from Instant Navigation prerender checks
+export const instant = false;
 
 interface PageProps {
-  params: Promise<{ short_code: string }>;
+  params: Promise<{ locale: string; short_code: string }>;
 }
 
-async function RedirectHandler({
-  params,
-}: {
-  params: Promise<{ short_code: string }>;
-}): Promise<React.ReactNode> {
+export const metadata: Metadata = {
+  title: "Redirecting...",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
+export default async function RedirectPage({ params }: PageProps) {
   const { short_code } = await params;
-  const apiUrl = process.env.API_URL || 'http://localhost:8000';
+  const apiUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8000";
 
   let originalUrl: string | null = null;
 
   try {
-    const res = await fetch(`${apiUrl}/url-shtnr/${short_code}`);
+    const res = await fetch(
+      `${apiUrl}/url-shtnr/${encodeURIComponent(short_code)}`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
 
-    if (!res.ok) {
-      notFound();
+    if (res.ok) {
+      const data = await res.json();
+      originalUrl = data.original_url;
     }
-
-    const data = await res.json();
-    originalUrl = data.original_url;
   } catch {
-    notFound();
+    // Backend unreachable -> drop to notFound()
   }
 
-  if (originalUrl) {
+  if (
+    originalUrl &&
+    (originalUrl.startsWith("http://") || originalUrl.startsWith("https://"))
+  ) {
     redirect(originalUrl);
   }
 
   notFound();
-  return null;
-}
-
-function RedirectFallback() {
-  return (
-    <div className="flex flex-col items-center justify-center grow p-6 gap-3">
-      <span className="icon-[lucide--loader-2] size-8 animate-spin text-primary"></span>
-      <p className="text-base-content/70 text-sm">Redirection en cours...</p>
-    </div>
-  );
-}
-
-export default function RedirectPage({ params }: PageProps) {
-  return (
-    <Suspense fallback={<RedirectFallback />}>
-      <RedirectHandler params={params} />
-    </Suspense>
-  );
 }
