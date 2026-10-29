@@ -4,6 +4,7 @@
 import { RefObject } from "react";
 import { useTranslations } from "next-intl";
 import ReactCrop, { type Crop, type PixelCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import type { ImageItem, AspectOption, AspectPreset } from "../types";
 
 interface StudioViewportProps {
