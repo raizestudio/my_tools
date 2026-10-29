@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/raizestudio/zerow/compare/0w-v1.5.5...0w-v1.6.0) (2026-10-29)
+
+
+### Features
+
+* add image studio ([74ad2bc](https://github.com/raizestudio/zerow/commit/74ad2bc3732b23a37956e1a3f5fe73605f321a32))
+
 ## [1.5.5](https://github.com/raizestudio/zerow/compare/0w-v1.5.4...0w-v1.5.5) (2026-10-29)
 
 
