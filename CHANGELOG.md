@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.4](https://github.com/raizestudio/zerow/compare/0w-v1.5.3...0w-v1.5.4) (2026-10-29)
+
+
+### Bug Fixes
+
+* remove app title from metadata ([51a7be2](https://github.com/raizestudio/zerow/commit/51a7be2e95f6ab36cfa570bc4e3395e7c0d8c5d0))
+
 ## [1.5.3](https://github.com/raizestudio/zerow/compare/0w-v1.5.2...0w-v1.5.3) (2026-10-29)
 
 
