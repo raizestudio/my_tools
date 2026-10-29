@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/raizestudio/zerow/compare/0w-v1.6.0...0w-v1.6.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* add gifenc types and typing ([4127c1f](https://github.com/raizestudio/zerow/commit/4127c1f0f01bb2eb97e1456e88e9e2c736898e00))
+
 ## [1.6.0](https://github.com/raizestudio/zerow/compare/0w-v1.5.5...0w-v1.6.0) (2026-10-29)
 
 
