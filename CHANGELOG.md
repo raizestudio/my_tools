@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.4](https://github.com/raizestudio/zerow/compare/0w-v1.6.3...0w-v1.6.4) (2026-10-29)
+
+
+### Bug Fixes
+
+* tailwind icon issue in secret share component ([4ee3ea6](https://github.com/raizestudio/zerow/commit/4ee3ea6326b3f92ef3d7c55ca5aa4eda5a048d97))
+
 ## [1.6.3](https://github.com/raizestudio/zerow/compare/0w-v1.6.2...0w-v1.6.3) (2026-10-29)
 
 
