@@ -5,7 +5,7 @@ import UrlShortenerComponent from "@/app/components/UrlShortenerComponent";
 const appTitle = process.env.NEXT_PUBLIC_APP_TITLE || "0w.lat";
 
 export const metadata: Metadata = {
-  title: `Raccourcisseur d'URL | ${appTitle}`,
+  title: `Raccourcisseur d'URL`,
   description: "Raccourcissez vos liens rapidement et créez des URLs épurées et personnalisées.",
   openGraph: {
     title: `Raccourcisseur d'URL - ${appTitle}`,
