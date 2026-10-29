@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.3](https://github.com/raizestudio/zerow/compare/0w-v1.5.2...0w-v1.5.3) (2026-10-29)
+
+
+### Bug Fixes
+
+* improve ui/ux of url shortener component ([16d573b](https://github.com/raizestudio/zerow/commit/16d573b1f31f17b74eff29e8c12499bd5d5367d6))
+
 ## [1.5.2](https://github.com/raizestudio/zerow/compare/0w-v1.5.1...0w-v1.5.2) (2026-10-29)
 
 
