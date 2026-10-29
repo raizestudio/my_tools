@@ -175,7 +175,7 @@ async function encodeGif(imageData: ImageData): Promise<Blob> {
   const gif = GIFEncoder();
   gif.writeFrame(index, width, height, { palette });
   gif.finish();
-  return new Blob([gif.bytes()], { type: "image/gif" });
+  return new Blob([gif.bytes() as unknown as BlobPart], { type: "image/gif" });
 }
 
 async function getCanvasBlob(
