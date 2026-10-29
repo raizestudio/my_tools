@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/raizestudio/zerow/compare/0w-v1.6.2...0w-v1.6.3) (2026-10-29)
+
+
+### Bug Fixes
+
+* improve secret share ui/ux ([3d7f790](https://github.com/raizestudio/zerow/commit/3d7f7901c805c5c2ccd184f28e8b0ed4b35d686b))
+
 ## [1.6.2](https://github.com/raizestudio/zerow/compare/0w-v1.6.1...0w-v1.6.2) (2026-10-29)
 
 
