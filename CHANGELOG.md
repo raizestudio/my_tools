@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6](https://github.com/raizestudio/zerow/compare/0w-v1.6.5...0w-v1.6.6) (2026-10-30)
+
+
+### Bug Fixes
+
+* add missing og image ([91c8612](https://github.com/raizestudio/zerow/commit/91c86125bd520aca9b66c1ecaf42cd9b07e87a1a))
+
 ## [1.6.5](https://github.com/raizestudio/zerow/compare/0w-v1.6.4...0w-v1.6.5) (2026-10-30)
 
 
