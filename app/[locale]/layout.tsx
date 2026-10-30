@@ -62,20 +62,20 @@ export async function generateMetadata({
       url: `${siteUrl}/${locale}`,
       title: t("title"),
       description: t("desc"),
-      images: [
-        {
-          url: "/android-chrome-512x512.png",
-          width: 512,
-          height: 512,
-          alt: "0w Toolbox",
-        },
-      ],
+      // images: [
+      //   {
+      //     url: "/android-chrome-512x512.png",
+      //     width: 512,
+      //     height: 512,
+      //     alt: "0w Toolbox",
+      //   },
+      // ],
     },
     twitter: {
       card: "summary_large_image",
       title: t("title"),
       description: t("desc"),
-      images: ["/android-chrome-512x512.png"],
+      // images: ["/android-chrome-512x512.png"],
     },
     robots: {
       index: true,

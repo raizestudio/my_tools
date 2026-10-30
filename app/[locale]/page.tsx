@@ -48,14 +48,14 @@ export async function generateMetadata({
       url: `${siteUrl}/${locale}`,
       locale: isFr ? "fr_FR" : "en_US",
       type: "website",
-      images: [
-        {
-          url: "/android-chrome-512x512.png",
-          width: 512,
-          height: 512,
-          alt: "0w Toolbox",
-        },
-      ],
+      // images: [
+      //   {
+      //     url: "/android-chrome-512x512.png",
+      //     width: 512,
+      //     height: 512,
+      //     alt: "0w Toolbox",
+      //   },
+      // ],
     },
   };
 }
