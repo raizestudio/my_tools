@@ -16,22 +16,20 @@ export default async function HeroSectionComponent({
   const t = await getTranslations({ locale, namespace: "landing" });
   const toolCount = AVAILABLE_TOOLS.length;
 
-  const rotatingPhrases = [
-    t("heroTitle2"),
-  ];
+  const rotatingPhrases = [t("heroTitle2")];
 
   return (
     <section className="relative w-full overflow-hidden pt-10 md:pt-16 pb-8 flex flex-col items-center gap-8 isolate">
       {/* 1. Primary Top Ambient Glow (Wide Soft Aurora) */}
       <div
         aria-hidden="true"
-        className="absolute -top-10 left-1/2 -translate-x-1/2 w-[550px] sm:w-[850px] lg:w-[1000px] h-[320px] sm:h-[420px] bg-gradient-to-b from-primary/25 via-secondary/15 to-transparent rounded-full blur-[90px] sm:blur-[130px] pointer-events-none -z-1"
+        className="absolute -top-10 left-1/2 -translate-x-1/2 w-137.5 sm:w-212.5 lg:w-250 h-80 sm:h-105 bg-linear-to-b from-primary/25 via-secondary/15 to-transparent rounded-full blur-[90px] sm:blur-[130px] pointer-events-none -z-1"
       />
 
       {/* 2. Concentrated Core Glow (Directly behind the H1 for contrast) */}
       <div
         aria-hidden="true"
-        className="absolute top-16 left-1/2 -translate-x-1/2 w-[280px] sm:w-[480px] h-[180px] sm:h-[240px] bg-primary/20 rounded-full blur-[70px] sm:blur-[95px] pointer-events-none -z-1"
+        className="absolute top-16 left-1/2 -translate-x-1/2 w-70 sm:w-120 h-45 sm:h-60 bg-primary/20 rounded-full blur-[70px] sm:blur-[95px] pointer-events-none -z-1"
       />
 
       {/* Main Hero Content (Kept on z-10 above the glow) */}
@@ -103,10 +101,8 @@ export default async function HeroSectionComponent({
       </div>
 
       {/* Infinite Velocity Stream with Word Hover */}
-      <div className="relative z-10 w-full mt-4">
-        <div className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-linear-to-r from-base-100 to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-linear-to-l from-base-100 to-transparent z-10 pointer-events-none" />
-
+      <div className="relative z-10 w-full mt-4 mask-[linear-gradient(to_right,transparent_0,transparent_4rem,black_24rem,black_calc(100%-24rem),transparent_calc(100%-4rem),transparent_100%)]">
+        {" "}
         <ScrollVelocityComponent
           texts={[
             "CLIENT-SIDE WASM",
