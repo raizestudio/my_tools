@@ -62,6 +62,14 @@ export async function generateMetadata({
       url: `${siteUrl}/${locale}`,
       title: t("title"),
       description: t("desc"),
+      images: [
+        {
+          url: "/favicon-chrome-512x512.png",
+          width: 512,
+          height: 512,
+          alt: "0w Toolbox",
+        },
+      ],
     },
     robots: {
       index: true,
