@@ -64,7 +64,7 @@ export async function generateMetadata({
       description: t("desc"),
       images: [
         {
-          url: "/favicon-chrome-512x512.png",
+          url: "/android-chrome-512x512.png",
           width: 512,
           height: 512,
           alt: "0w Toolbox",
@@ -75,7 +75,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("desc"),
-      images: ["/favicon-chrome-512x512.png"],
+      images: ["/android-chrome-512x512.png"],
     },
     robots: {
       index: true,
