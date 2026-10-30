@@ -71,6 +71,12 @@ export async function generateMetadata({
         },
       ],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("desc"),
+      images: ["/favicon-chrome-512x512.png"],
+    },
     robots: {
       index: true,
       follow: true,
