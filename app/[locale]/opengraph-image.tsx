@@ -14,38 +14,59 @@ export default async function Image() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "flex-start",
+        alignItems: "center", // Center everything so the crop never cuts off edges
+        textAlign: "center",
         backgroundColor: "#602BDE",
-        padding: "80px",
+        padding: "60px 40px",
         fontFamily: "sans-serif",
       }}
     >
+      {/* Brand Pill / Tag */}
       <div
         style={{
-          color: "#38bdf8",
-          fontSize: 36,
-          fontWeight: 700,
-          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          color: "#ffffff",
+          padding: "8px 24px",
+          borderRadius: "9999px",
+          fontSize: 28,
+          fontWeight: 800,
+          letterSpacing: "-0.02em",
+          marginBottom: 24,
         }}
       >
         0w.lat
       </div>
+
+      {/* Main Headline (Constrained to the 630px crop window) */}
       <div
         style={{
           color: "#ffffff",
-          fontSize: 64,
+          fontSize: 54,
           fontWeight: 800,
-          lineHeight: 1.1,
+          lineHeight: 1.15,
           marginBottom: 24,
-          maxWidth: 900,
+          maxWidth: 640, // Keeps text strictly inside Slack's 630px center crop
         }}
       >
         Privacy-First Developer & Security Toolbox
       </div>
-      <div style={{ color: "#94a3b8", fontSize: 28, fontWeight: 500 }}>
+
+      {/* Feature Bullet Strip */}
+      <div
+        style={{
+          color: "#e2e8f0",
+          fontSize: 22,
+          fontWeight: 500,
+          maxWidth: 620,
+          lineHeight: 1.4,
+        }}
+      >
         Client-Side WASM • Zero Telemetry • 100% Stateless
       </div>
     </div>,
-    { ...size },
+    { ...size }
   );
 }
