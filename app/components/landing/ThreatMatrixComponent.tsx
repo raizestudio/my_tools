@@ -43,7 +43,7 @@ export default async function ThreatMatrixComponent({ locale }: ThreatMatrixProp
               {t("colOther")}
             </span>
           </div>
-          <span className="badge badge-xs badge-soft badge-error font-mono">
+          <span className="badge badge-xs badge-soft badge-error font-mono whitespace-nowrap">
             Legacy Model
           </span>
         </div>
@@ -55,7 +55,7 @@ export default async function ThreatMatrixComponent({ locale }: ThreatMatrixProp
               {t("colZeroW")}
             </span>
           </div>
-          <span className="badge badge-xs badge-soft badge-success font-mono font-bold">
+          <span className="badge badge-xs badge-soft badge-success font-mono font-bold whitespace-nowrap">
             0w Protocol
           </span>
         </div>

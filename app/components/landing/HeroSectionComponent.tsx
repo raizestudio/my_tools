@@ -36,7 +36,7 @@ export default async function HeroSectionComponent({
       <div className="relative z-10 px-4 w-full max-w-4xl">
         <HeroAnimationWrapper>
           {/* Feature Badge */}
-          <div className="badge badge-soft badge-primary py-3 px-4 text-xs font-mono font-medium gap-2 shadow-xs mb-4 rounded-full border border-primary/25 backdrop-blur-md">
+          <div className="badge badge-soft badge-primary py-4 sm:py-3 px-4 text-xs font-mono font-medium gap-2 shadow-xs mb-4 rounded-full border border-primary/25 backdrop-blur-md">
             <span className="icon-[lucide--shield-check] size-3.5 text-primary"></span>
             <span>{t("badge", { count: toolCount })}</span>
           </div>
@@ -51,7 +51,7 @@ export default async function HeroSectionComponent({
           />
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-base-content/75 text-center max-w-2xl leading-relaxed mb-8">
+          <p className="text-base sm:text-lg text-base-content/75 text-center max-w-2xl leading-relaxed mt-8 sm:mt-0 mb-8">
             {t("heroSub")}
           </p>
 
