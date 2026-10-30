@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.5](https://github.com/raizestudio/zerow/compare/0w-v1.6.4...0w-v1.6.5) (2026-10-30)
+
+
+### Bug Fixes
+
+* wrong gradient color of scroll velocity component ([d50f840](https://github.com/raizestudio/zerow/commit/d50f840635f2019e3124a8d03482e168dc017fe1))
+
 ## [1.6.4](https://github.com/raizestudio/zerow/compare/0w-v1.6.3...0w-v1.6.4) (2026-10-29)
 
 
