@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.7](https://github.com/raizestudio/zerow/compare/0w-v1.6.6...0w-v1.6.7) (2026-10-30)
+
+
+### Bug Fixes
+
+* hero section typewriter text overlap on mobile ([9a65729](https://github.com/raizestudio/zerow/commit/9a6572962a78b4da39354368e8bd86cb520c874d))
+
 ## [1.6.6](https://github.com/raizestudio/zerow/compare/0w-v1.6.5...0w-v1.6.6) (2026-10-30)
 
 
