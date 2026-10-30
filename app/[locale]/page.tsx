@@ -42,11 +42,20 @@ export async function generateMetadata({
       },
     },
     openGraph: {
+      siteName: "0w Toolbox",
       title: `0w — Privacy-First Developer & Security Toolbox`,
       description: t("heroSub"),
       url: `${siteUrl}/${locale}`,
       locale: isFr ? "fr_FR" : "en_US",
       type: "website",
+      images: [
+        {
+          url: "/android-chrome-512x512.png",
+          width: 512,
+          height: 512,
+          alt: "0w Toolbox",
+        },
+      ],
     },
   };
 }
