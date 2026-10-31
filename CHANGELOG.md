@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.8](https://github.com/raizestudio/zerow/compare/0w-v1.6.7...0w-v1.6.8) (2026-10-31)
+
+
+### Bug Fixes
+
+* mobile ui of threat matrix component ([a794e59](https://github.com/raizestudio/zerow/commit/a794e5973ed057ae7326acc9618b658c6c92f615))
+
 ## [1.6.7](https://github.com/raizestudio/zerow/compare/0w-v1.6.6...0w-v1.6.7) (2026-10-30)
 
 
