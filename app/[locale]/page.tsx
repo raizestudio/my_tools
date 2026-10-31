@@ -129,7 +129,7 @@ export default async function LandingPage({
 
       <div className="flex flex-col gap-24 pb-20 w-full">
         <HeroSectionComponent locale={locale} />
-        <ThreatMatrixComponent locale={locale} />
+        <ThreatMatrixComponent />
         <TechnicalPillarsComponent locale={locale} />
         <CategoryShowcaseComponent locale={locale} />
         <FaqAccordionComponent locale={locale} />
